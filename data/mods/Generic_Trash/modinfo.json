@@ -1,0 +1,12 @@
+[
+  {
+    "type": "MOD_INFO",
+    "id": "generic_trash",
+    "name": "Generic Trash",
+    "authors": [ "SuddenEyePuncture" ],
+    "maintainers": [ "SuddenEyePuncture" ],
+    "description": "Replaces mostly useless items (such as forks, corkscrews, pucks, plastic straws and so on) with generic trash type, like metal, wooden, ceramic, or plastic junk.",
+    "category": "items",
+    "dependencies": [ "dda" ]
+  }
+]
