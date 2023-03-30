@@ -4534,7 +4534,7 @@ void overmap::place_forests()
             // If the noise here meets our threshold, turn it into a forest.
             if( n > threshold_forest_thick ) {
                 ter_set( p, oter_forest_thick );
-            } else if( n > threshold_forest  ) {
+            } else if( n > threshold_forest ) {
                 ter_set( p, oter_forest );
             }
         }
