@@ -4493,6 +4493,31 @@ void overmap::place_forests()
 
     const om_noise::om_noise_layer_forest f( global_base_point(), g->get_seed() );
 
+    float threshold_forest = settings->overmap_forest.noise_threshold_forest;
+    float threshold_forest_thick = settings->overmap_forest.noise_threshold_forest_thick;
+
+    if( !settings->overmap_forest.noise_threshold_forest_options.empty() &&
+        !settings->overmap_forest.noise_threshold_forest_thick_options.empty() ) {
+        std::string forest_amount = get_option<std::string>( "FOREST_AMOUNT" );
+        int option_index = 2;
+        if( forest_amount == "very_low" ) {
+            option_index = 0;
+        } else if( forest_amount == "low" ) {
+            option_index = 1;
+        } else if( forest_amount == "normal" ) {
+            option_index = 2;
+        } else if( forest_amount == "high" ) {
+            option_index = 3;
+        } else if( forest_amount == "very_high" ) {
+            option_index = 4;
+        } else if( forest_amount != "default" ) {
+            debugmsg( "Unknown value '%s' for world option FOREST_AMOUNT", forest_amount );
+        }
+        threshold_forest = settings->overmap_forest.noise_threshold_forest_options[option_index];
+        threshold_forest_thick =
+            settings->overmap_forest.noise_threshold_forest_thick_options[option_index];
+    }
+
     for( int x = 0; x < OMAPX; x++ ) {
         for( int y = 0; y < OMAPY; y++ ) {
             const tripoint_om_omt p( x, y, 0 );
@@ -4507,9 +4532,9 @@ void overmap::place_forests()
             const float n = f.noise_at( p.xy() );
 
             // If the noise here meets our threshold, turn it into a forest.
-            if( n > settings->overmap_forest.noise_threshold_forest_thick ) {
+            if( n > threshold_forest_thick ) {
                 ter_set( p, oter_forest_thick );
-            } else if( n > settings->overmap_forest.noise_threshold_forest ) {
+            } else if( n > threshold_forest  ) {
                 ter_set( p, oter_forest );
             }
         }
