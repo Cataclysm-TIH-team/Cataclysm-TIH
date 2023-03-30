@@ -325,7 +325,7 @@ class inventory_holster_preset : public inventory_selector_preset
         explicit inventory_holster_preset( item_location holster, Character *c )
             : holster( std::move( holster ) ), who( c ) {
         }
-
+        const item_location &get_holster() const;
         /** Does this entry satisfy the basic preset conditions? */
         bool is_shown( const item_location &contained ) const override;
         std::string get_denial( const item_location &it ) const override;
@@ -715,16 +715,22 @@ class inventory_selector
          * @param val The default value to have set in the query prompt.
          * @return A tuple of a bool and string, bool is true if user confirmed.
          */
-        std::pair< bool, std::string > query_string( const std::string &val );
+        std::pair< bool, std::string > query_string( const std::string &val, bool end_with_toggle = false );
         /** Query the user for a filter and apply it. */
         void query_set_filter();
         /** Query the user for count and return it. */
-        int query_count();
+        int query_count( char init = 0, bool end_with_toggle = false );
 
         /** Tackles screen overflow */
         virtual void rearrange_columns( size_t client_width );
 
-        static stats get_weight_and_volume_stats(
+        static stat get_weight_and_length_stat( units::mass weight_carried,
+                                                units::mass weight_capacity, const units::length &longest_length );
+        static stat get_volume_stat( const units::volume
+                                     &volume_carried, const units::volume &volume_capacity, const units::volume &largest_free_volume );
+        static stat get_holster_stat( const units::volume
+                                      &holster_volume, int used_holsters, int total_holsters );
+        static stats get_weight_and_volume_and_holster_stats(
             units::mass weight_carried, units::mass weight_capacity,
             const units::volume &volume_carried, const units::volume &volume_capacity,
             const units::length &longest_length, const units::volume &largest_free_volume,
@@ -988,6 +994,18 @@ class inventory_drop_selector : public inventory_multiselector
 
     private:
         bool warn_liquid;
+};
+
+class inventory_insert_selector : public inventory_drop_selector
+{
+    public:
+        explicit inventory_insert_selector(
+            Character &p,
+            const inventory_holster_preset &preset,
+            const std::string &selection_column_title = _( "ITEMS TO INSERT" ),
+            bool warn_liquid = true );
+    protected:
+        stats get_raw_stats() const override;
 };
 
 class pickup_selector : public inventory_multiselector
