@@ -57,7 +57,6 @@ void item_category::load( const JsonObject &jo, const std::string & )
     mandatory( jo, was_loaded, "sort_rank", sort_rank_ );
     optional( jo, was_loaded, "priority_zones", zone_priority_ );
     optional( jo, was_loaded, "zone", zone_, std::nullopt );
-    optional( jo, was_loaded, "spawn_rate", spawn_rate, 1.0f );
 }
 
 bool item_category::operator<( const item_category &rhs ) const
@@ -119,7 +118,3 @@ int item_category::sort_rank() const
     return sort_rank_;
 }
 
-float item_category::get_spawn_rate() const
-{
-    return spawn_rate;
-}
