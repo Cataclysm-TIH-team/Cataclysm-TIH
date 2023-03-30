@@ -894,7 +894,7 @@ bool Character::melee_attack_abstract( Creature &t, bool allow_special,
         }
     }
 
-    if( !t.is_hallucination() ) {
+    if( hits && !t.is_hallucination() ) {
         handle_melee_wear( cur_weapon );
     }
 
