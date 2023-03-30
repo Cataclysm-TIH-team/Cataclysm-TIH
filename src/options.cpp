@@ -2704,6 +2704,17 @@ void options_manager::add_options_world_default()
     { { "default", to_translation( "default" ) } }, "default"
        );
 
+    add( "FOREST_AMOUNT", "world_default", to_translation( "Amount of forest" ),
+    to_translation( "Forest density.  'default' leaves game and/or mod setting unaffected.  All other values change the forest density, relative to the region settings." ), {
+        { "default", to_translation( "Default" ) },
+        { "very_low", to_translation( "Very low" ) },
+        { "low", to_translation( "Low" ) },
+        { "normal", to_translation( "Normal" ) },
+        { "high", to_translation( "High" ) },
+        { "very_high", to_translation( "Very high" ) },
+    }, "default"
+       );
+
     add_empty_line();
 
     add( "INITIAL_TIME", "world_default", to_translation( "Initial time" ),
