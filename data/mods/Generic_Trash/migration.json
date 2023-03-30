@@ -1,0 +1,132 @@
+[
+  {
+    "id": [
+      "plastic_fork",
+      "plastic_spoon",
+      "plastic_spoon_kids",
+      "plastic_knife",
+      "plastic_straw",
+      "plastic_six_dice",
+      "soap_holder",
+      "toothbrush_plain",
+      "toothbrush_dirty",
+      "hairbrush",
+      "curler_hair",
+      "comb_pocket",
+      "plunger_futuristic",
+      "brush_toilet",
+      "toothbrush_electric",
+      "dentures",
+      "shuttlecock",
+      "golf_ball",
+      "rubber_band",
+      "disc_golf",
+      "frisbee",
+      "bath_toy",
+      "puck"
+    ],
+    "type": "MIGRATION",
+    "replace": "generic_plastic"
+  },
+  {
+    "id": [ "plastic_plate", "plastic_bowl_kids", "cup_plastic", "sippy_cup", "tumbler_plastic" ],
+    "type": "MIGRATION",
+    "replace": "generic_plastic_dish"
+  },
+  {
+    "id": [
+      "comb_lice",
+      "mess_tray",
+      "cheese_grater",
+      "fork",
+      "spoon",
+      "knife_butter",
+      "corkscrew",
+      "peeler",
+      "bottle_opener",
+      "spork",
+      "foon",
+      "pizza_cutter",
+      "icecream_scoop",
+      "cheese_grater",
+      "ladle",
+      "whisk",
+      "potato_masher",
+      "garlic_press",
+      "can_opener",
+      "carving_fork",
+      "office_holepunch"
+    ],
+    "type": "MIGRATION",
+    "replace": "generic_steel"
+  },
+  {
+    "id": [ "ceramic_plate", "ceramic_bowl", "ceramic_cup", "ceramic_mug" ],
+    "type": "MIGRATION",
+    "replace": "generic_ceramic"
+  },
+  {
+    "id": [ "coin_penny", "coin_nickel", "coin_dime", "coin_quarter", "coin_half_dollar", "coin_dollar" ],
+    "type": "MIGRATION",
+    "replace": "generic_coin"
+  },
+  {
+    "id": [ "money_one", "money_two", "money_five", "money_ten", "money_twenty", "money_fifty", "money_hundred" ],
+    "type": "MIGRATION",
+    "replace": "generic_money"
+  },
+  {
+    "id": [
+      "money_strap_one",
+      "money_strap_two",
+      "money_strap_five",
+      "money_strap_ten",
+      "money_strap_twenty",
+      "money_strap_hundred"
+    ],
+    "type": "MIGRATION",
+    "replace": "generic_money_strap"
+  },
+  {
+    "id": [
+      "money_bundle_one",
+      "money_bundle_two",
+      "money_bundle_five",
+      "money_bundle_ten",
+      "money_bundle_twenty",
+      "money_bundle_hundred"
+    ],
+    "type": "MIGRATION",
+    "replace": "generic_money_bundle"
+  },
+  {
+    "id": [ "bottle_bathroom", "condiment_bottle_sealed" ],
+    "type": "MIGRATION",
+    "replace": "bottle_plastic"
+  },
+  {
+    "id": [ "bottle_plastic_pill_painkiller", "bottle_plastic_pill_supplement", "bottle_plastic_pill_prescription" ],
+    "type": "MIGRATION",
+    "replace": "bottle_plastic_small"
+  },
+  {
+    "id": [ "dish_towel", "brush", "sponge" ],
+    "type": "MIGRATION",
+    "replace": "rag"
+  },
+  {
+    "id": [ "plunger_toilet", "chopsticks", "cutting_board", "rolling_pin", "golf_tee", "rake", "rake_plastic" ],
+    "type": "MIGRATION",
+    "replace": "generic_wood"
+  },
+  {
+    "id": [ "file", "character_sheet", "flyer", "napkin", "toilet_paper", "scorecard" ],
+    "type": "MIGRATION",
+    "replace": "generic_paper"
+  },
+  {
+    "id": [ "glass", "glass_bowl", "glass_plate", "shot_glass", "wine_glass" ],
+    "type": "MIGRATION",
+    "replace": "generic_glass"
+  }
+]
