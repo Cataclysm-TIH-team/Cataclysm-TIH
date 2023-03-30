@@ -172,7 +172,6 @@ std::string enum_to_string<debug_menu::debug_menu_index>( debug_menu::debug_menu
         case debug_menu::debug_menu_index::SPAWN_ARTIFACT: return "SPAWN_ARTIFACT";
         case debug_menu::debug_menu_index::SPAWN_CLAIRVOYANCE: return "SPAWN_CLAIRVOYANCE";
         case debug_menu::debug_menu_index::MAP_EDITOR: return "MAP_EDITOR";
-        case debug_menu::debug_menu_index::CHANGE_WEATHER: return "CHANGE_WEATHER";
         case debug_menu::debug_menu_index::WIND_DIRECTION: return "WIND_DIRECTION";
         case debug_menu::debug_menu_index::WIND_SPEED: return "WIND_SPEED";
         case debug_menu::debug_menu_index::GEN_SOUND: return "GEN_SOUND";
@@ -545,7 +544,6 @@ static int map_uilist()
         { uilist_entry( debug_menu_index::KILL_AREA, true, 'a', _( "Kill in Area" ) ) },
         { uilist_entry( debug_menu_index::KILL_NPCS, true, 'k', _( "Kill NPCs" ) ) },
         { uilist_entry( debug_menu_index::MAP_EDITOR, true, 'M', _( "Map editor" ) ) },
-        { uilist_entry( debug_menu_index::CHANGE_WEATHER, true, 'w', _( "Change weather" ) ) },
         { uilist_entry( debug_menu_index::WIND_DIRECTION, true, 'd', _( "Change wind direction" ) ) },
         { uilist_entry( debug_menu_index::WIND_SPEED, true, 's', _( "Change wind speed" ) ) },
         { uilist_entry( debug_menu_index::GEN_SOUND, true, 'S', _( "Generate sound" ) ) },
@@ -2818,37 +2816,6 @@ void debug()
         case debug_menu_index::MAP_EDITOR:
             g->look_debug();
             break;
-
-        case debug_menu_index::CHANGE_WEATHER: {
-            uilist weather_menu;
-            weather_manager &weather = get_weather();
-            weather_generator wgen = weather.get_cur_weather_gen();
-            weather_menu.text = _( "Select new weather pattern:" );
-            weather_menu.addentry( 0, true, MENU_AUTOASSIGN, weather.weather_override == WEATHER_NULL ?
-                                   _( "Keep normal weather patterns" ) : _( "Disable weather forcing" ) );
-            for( size_t i = 0; i < wgen.sorted_weather.size(); i++ ) {
-                weather_menu.addentry( i, true, MENU_AUTOASSIGN,
-                                       wgen.sorted_weather[i]->name.translated() );
-            }
-
-            weather_menu.query();
-
-            if( weather_menu.ret >= 0 &&
-                static_cast<size_t>( weather_menu.ret ) < wgen.sorted_weather.size() ) {
-                const weather_type_id selected_weather = wgen.sorted_weather[weather_menu.ret]->id;
-                if( weather.weather_id->debug_leave_eoc.has_value() ) {
-                    dialogue d( get_talker_for( get_avatar() ), nullptr );
-                    effect_on_condition_id( weather.weather_id->debug_leave_eoc.value() )->activate( d );
-                }
-                if( selected_weather->debug_cause_eoc.has_value() ) {
-                    dialogue d( get_talker_for( get_avatar() ), nullptr );
-                    effect_on_condition_id( selected_weather->debug_cause_eoc.value() )->activate( d );
-                }
-                weather.weather_override = selected_weather;
-                weather.set_nextweather( calendar::turn );
-            }
-        }
-        break;
 
         case debug_menu_index::WIND_DIRECTION: {
             uilist wind_direction_menu;
