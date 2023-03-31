@@ -1690,7 +1690,7 @@ void options_manager::add_options_interface()
     add( "USE_CELSIUS", "interface", to_translation( "Temperature units" ),
          to_translation( "Switch between Fahrenheit, Celsius, and Kelvin." ),
     { { "fahrenheit", to_translation( "Fahrenheit" ) }, { "celsius", to_translation( "Celsius" ) }, { "kelvin", to_translation( "Kelvin" ) } },
-    "fahrenheit"
+    "celsius"
        );
 
     add( "USE_METRIC_SPEEDS", "interface", to_translation( "Speed units" ),
@@ -1724,7 +1724,7 @@ void options_manager::add_options_interface()
         //~ 24h time, e.g.  23:59
         { "24h", to_translation( "24h" ) }
     },
-    "12h" );
+    "24h" );
 
     add_empty_line();
 
