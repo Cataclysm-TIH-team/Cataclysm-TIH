@@ -1976,6 +1976,11 @@ void options_manager::add_options_interface()
          false
        );
 
+    add( "MOD_SOURCE", "interface", to_translation( "Display source of content" ),
+         to_translation( "Displays what content pack a piece of furniture, terrain, item, or monster comes from or is affected by." ),
+         true
+       );
+
     add_empty_line();
 
     add( "MOVE_VIEW_OFFSET", "interface", to_translation( "Move view offset" ),
@@ -4012,6 +4017,7 @@ static void update_options_cache()
     fov_3d_z_range = ::get_option<int>( "FOV_3D_Z_RANGE" );
     keycode_mode = ::get_option<std::string>( "SDL_KEYBOARD_MODE" ) == "keycode";
     use_pinyin_search = ::get_option<bool>( "USE_PINYIN_SEARCH" );
+    display_mod_source = ::get_option<bool>( "MOD_SOURCE" );
 }
 
 bool options_manager::save() const

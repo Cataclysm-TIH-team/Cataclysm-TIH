@@ -6,6 +6,7 @@ bool keycode_mode;
 bool log_from_top;
 int message_ttl;
 int message_cooldown;
+bool display_mod_source;
 bool test_mode;
 int prevent_occlusion;
 bool prevent_occlusion_retract;

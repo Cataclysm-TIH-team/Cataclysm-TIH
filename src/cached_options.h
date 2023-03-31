@@ -26,6 +26,8 @@ extern int pixel_minimap_r;
 extern int pixel_minimap_g;
 extern int pixel_minimap_b;
 extern int pixel_minimap_a;
+/** Display mod source for items, furniture, terrain and monsters.*/
+extern bool display_mod_source;
 
 // test_mode is not a regular game option; it's true when we are running unit
 // tests.
