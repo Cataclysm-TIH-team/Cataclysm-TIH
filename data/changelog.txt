@@ -1,3 +1,19 @@
+# Cataclysm: There Is Still Hope
+
+## Features:
+Added possibility to configure forest density in game options
+Melee weapons won't be damaged anymore by misses
+Defense bots, turrets, and mi-go scout will now fire at moving vehicles
+
+## Interface
+Item categories spawn rate is now located in game options rather than hidden in json
+Eternal weather is now located in game options rather than hidden in json
+Added possibility to show or hide source of content when examining an item
+Added possibility to change color for 'Explored' tiles through json editing
+
+## Mods
+Added Generic Trash mod which converts mostly useless fluff items into a generic metal/wood/ceramic etc junk
+
 # 0.H
 
 ## Features:
