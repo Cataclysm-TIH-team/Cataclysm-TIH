@@ -855,9 +855,9 @@ std::string monster::extended_description() const
         type->src.end(), []( const std::pair<mtype_id, mod_id> &source ) {
             return string_format( "'%s'", source.second->name() );
         }, enumeration_conjunction::arrow );
-
-        ss += "\n--\n";
     }
+
+    ss += "\n--\n";
 
     if( debug_mode ) {
         ss += type->id.str();
