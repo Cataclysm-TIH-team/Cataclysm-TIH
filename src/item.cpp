@@ -2117,7 +2117,7 @@ double item::average_dps( const Character &guy ) const
 void item::basic_info( std::vector<iteminfo> &info, const iteminfo_query *parts, int batch,
                        bool /* debug */ ) const
 {
-    if( parts->test( iteminfo_parts::BASE_MOD_SRC ) ) {
+    if( display_mod_source && parts->test( iteminfo_parts::BASE_MOD_SRC ) ) {
         info.emplace_back( "BASE", string_format( _( "Origin: %s" ), enumerate_as_string( type->src,
         []( const std::pair<itype_id, mod_id> &source ) {
             return string_format( "'%s'", source.second->name() );
