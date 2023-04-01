@@ -4,6 +4,7 @@
 Added possibility to configure forest density in game options
 Melee weapons won't be damaged anymore by misses
 Defense bots, turrets, and mi-go scout will now fire at moving vehicles
+Prompt player to return to main menu on character death (aka avoid permadeath)
 
 ## Interface
 Item categories spawn rate is now located in game options rather than hidden in json
