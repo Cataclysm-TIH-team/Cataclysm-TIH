@@ -12,6 +12,7 @@ Item categories spawn rate is now located in game options rather than hidden in 
 Eternal weather is now located in game options rather than hidden in json
 Added possibility to show or hide source of content when examining an item
 Added possibility to change color for 'Explored' tiles through json editing
+Show gender on NPC
 
 ## Mods
 Added Generic Trash mod which converts mostly useless fluff items into a generic metal/wood/ceramic etc junk
