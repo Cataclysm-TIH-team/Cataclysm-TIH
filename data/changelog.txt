@@ -6,6 +6,9 @@ Melee weapons won't be damaged anymore by misses
 Defense bots, turrets, and mi-go scout will now fire at moving vehicles
 Prompt player to return to main menu on character death (aka avoid permadeath)
 
+## Content
+Returned back previously obsoleted SPIW weapons
+
 ## Interface
 Item categories spawn rate is now located in game options rather than hidden in json
 Eternal weather is now located in game options rather than hidden in json
