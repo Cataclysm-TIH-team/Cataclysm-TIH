@@ -41,8 +41,8 @@ jobs:
       - name: Generate environmental variables
         id: generate_env_vars
         run: |
-          echo "tag_name=cdda-experimental-${{ steps.get-timestamp.outputs.time }}" >> $GITHUB_OUTPUT
-          echo "release_name=Cataclysm-DDA experimental build ${{ steps.get-timestamp.outputs.time }}" >> $GITHUB_OUTPUT
+          echo "tag_name=tish-experimental-${{ steps.get-timestamp.outputs.time }}" >> $GITHUB_OUTPUT
+          echo "release_name=Cataclysm: TISH experimental build ${{ steps.get-timestamp.outputs.time }}" >> $GITHUB_OUTPUT
       - name: Check if there is existing git tag
         id: tag_check
         uses: mukunku/tag-exists-action@v1.0.0
@@ -276,19 +276,19 @@ jobs:
         shell: bash
         run: |
           lang/compile_mo.sh all
-      - name: Build CDDA (linux)
+      - name: Build C:TISH (linux)
         if: runner.os == 'Linux' && matrix.mxe == 'none' && matrix.android == 'none'
         run: |
           make -j$((`nproc`+0)) TILES=${{ matrix.tiles }} SOUND=${{ matrix.tiles }} RELEASE=1 LOCALIZE=1 LANGUAGES=all BACKTRACE=0 PCH=0 bindist
-          mv cataclysmdda-0.F.tar.gz cdda-${{ matrix.artifact }}-${{ needs.release.outputs.timestamp }}.tar.gz
-      - name: Build CDDA (windows mxe)
+          mv cataclysmtish-0.F.tar.gz tish-${{ matrix.artifact }}-${{ needs.release.outputs.timestamp }}.tar.gz
+      - name: Build C:TISH (windows mxe)
         if: matrix.mxe != 'none'
         env:
           PLATFORM: /opt/mxe/usr/bin/${{ matrix.mxe }}-w64-mingw32.static.gcc12-
         run: |
           make -j$((`nproc`+0)) CROSS="${PLATFORM}" TILES=1 SOUND=1 RELEASE=1 LOCALIZE=1 LANGUAGES=all BACKTRACE=1 PCH=0 bindist
-          mv cataclysmdda-0.F.zip cdda-${{ matrix.artifact }}-${{ needs.release.outputs.timestamp }}.zip
-      - name: Build CDDA (windows msvc)
+          mv cataclysmtish-0.F.zip tish-${{ matrix.artifact }}-${{ needs.release.outputs.timestamp }}.zip
+      - name: Build C:TISH (windows msvc)
         if: runner.os == 'Windows'
         env:
           # Enable pretty backtraces
@@ -298,12 +298,12 @@ jobs:
         run: |
           msbuild -m -p:Configuration=Release -p:Platform=${{ matrix.arch }} "-target:Cataclysm-vcpkg-static;JsonFormatter-vcpkg-static" msvc-full-features\Cataclysm-vcpkg-static.sln
           .\build-scripts\windist.ps1
-          mv cataclysmdda-0.F.zip cdda-${{ matrix.artifact }}-${{ needs.release.outputs.timestamp }}.zip
-      - name: Build CDDA (osx)
+          mv cataclysmtish-0.F.zip tish-${{ matrix.artifact }}-${{ needs.release.outputs.timestamp }}.zip
+      - name: Build C:TISH (osx)
         if: runner.os == 'macOS'
         run: |
           make -j3 TILES=${{ matrix.tiles }} SOUND=${{ matrix.tiles }} RELEASE=1 LOCALIZE=1 LANGUAGES=all BACKTRACE=0 PCH=0 USE_HOME_DIR=1 FRAMEWORK=1 UNIVERSAL_BINARY=1 dmgdist
-          mv Cataclysm.dmg cdda-${{ matrix.artifact }}-${{ needs.release.outputs.timestamp }}.dmg
+          mv Cataclysm.dmg tish-${{ matrix.artifact }}-${{ needs.release.outputs.timestamp }}.dmg
       - name: Set up JDK 8 (android)
         if: runner.os == 'Linux' && matrix.android != 'none' && matrix.mxe == 'none'
         uses: actions/setup-java@v2
@@ -315,7 +315,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install gettext          
-      - name: Build CDDA (android)
+      - name: Build C:TISH (android)
         if: runner.os == 'Linux' && matrix.android != 'none' && matrix.mxe == 'none'
         working-directory: ./android
         run: | 
@@ -328,15 +328,15 @@ jobs:
           if [ ${{ matrix.android }} = arm64 ]
           then
                ./gradlew -Pj=$((`nproc`+0)) -Pabi_arm_32=false assembleExperimentalRelease
-               mv ./app/build/outputs/apk/experimental/release/*.apk ../cdda-${{ matrix.artifact }}-${{ needs.release.outputs.timestamp }}.apk
+               mv ./app/build/outputs/apk/experimental/release/*.apk ../tish-${{ matrix.artifact }}-${{ needs.release.outputs.timestamp }}.apk
           elif [ ${{ matrix.android }} = arm32 ]
           then
                ./gradlew -Pj=$((`nproc`+0)) -Pabi_arm_64=false assembleExperimentalRelease
-               mv ./app/build/outputs/apk/experimental/release/*.apk ../cdda-${{ matrix.artifact }}-${{ needs.release.outputs.timestamp }}.apk 
+               mv ./app/build/outputs/apk/experimental/release/*.apk ../tish-${{ matrix.artifact }}-${{ needs.release.outputs.timestamp }}.apk 
           elif [ ${{ matrix.android }} = bundle ]
           then
                ./gradlew -Pj=$((`nproc`+0)) bundleExperimentalRelease
-               mv ./app/build/outputs/bundle/experimentalRelease/*.aab ../cdda-${{ matrix.artifact }}-${{ needs.release.outputs.timestamp }}.aab     
+               mv ./app/build/outputs/bundle/experimentalRelease/*.aab ../tish-${{ matrix.artifact }}-${{ needs.release.outputs.timestamp }}.aab     
           fi
       - name: Upload release asset
         id: upload-release-asset 
@@ -345,8 +345,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.release.outputs.upload_url }} 
-          asset_path: cdda-${{ matrix.artifact }}-${{ needs.release.outputs.timestamp }}.${{ matrix.ext }}
-          asset_name: cdda-${{ matrix.artifact }}-${{ needs.release.outputs.timestamp }}.${{ matrix.ext }}
+          asset_path: tish-${{ matrix.artifact }}-${{ needs.release.outputs.timestamp }}.${{ matrix.ext }}
+          asset_name: tish-${{ matrix.artifact }}-${{ needs.release.outputs.timestamp }}.${{ matrix.ext }}
           asset_content_type: ${{ matrix.content }}
       - name: Trigger GitHub pages rebuild
         if: github.repository == 'CleverRaven/Cataclysm-DDA'
