@@ -3,7 +3,7 @@
 ## Features:
 Added possibility to configure forest density in game options
 Melee weapons won't be damaged anymore by misses
-Defense bots, turrets, and mi-go scout will now fire at moving vehicles
+Defense bots, turrets, and mi-go scout will now fire at moving vehicles even if they don't see player controlling said vehicles
 Prompt player to return to main menu on character death (aka avoid permadeath)
 
 ## Content
