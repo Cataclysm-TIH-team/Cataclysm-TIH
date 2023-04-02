@@ -6,6 +6,8 @@
   },
   {
     "id": [
+      "20x66_10_mag",
+      "20x66_20_mag",
       "af2011a1mag",
       "ppkmag",
       "sigp230mag",
@@ -106,6 +108,7 @@
   },
   {
     "id": [
+      "20x66_40_mag",
       "skorpion61mag",
       "mac11mag",
       "glock40bigmag",
