@@ -17,6 +17,9 @@ Added possibility to show or hide source of content when examining an item
 Added possibility to change color for 'Explored' tiles through json editing
 Show gender on NPC
 
+## Balance
+Increased limit of dragging vehicles from 1000 kg to 5000 kg
+
 ## Mods
 Added Generic Trash mod which converts mostly useless fluff items into a generic metal/wood/ceramic etc junk
 Added No Portal Storms mod which completely disables portal storms
