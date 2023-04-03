@@ -273,7 +273,7 @@ float Character::crafting_speed_multiplier( const recipe &rec ) const
 
     const float result = morale_crafting_speed_multiplier( rec ) *
                          lighting_craft_speed_multiplier( rec ) *
-                         integrated_armor_affects_hands ? get_limb_score( limb_score_manip ) : 1;
+                         ( integrated_armor_affects_hands ? get_limb_score( limb_score_manip ) : 1 );
     add_msg_debug( debugmode::DF_CHARACTER, "Limb score multiplier %.1f, crafting speed multiplier %1f",
                    get_limb_score( limb_score_manip ), result );
 
@@ -300,7 +300,7 @@ float Character::crafting_speed_multiplier( const item &craft,
         get_avatar().worn_with_flag( json_flag_INTEGRATED, bodypart_id( "hand_r" ) );
 
     const float total_multi = light_multi * bench_multi * morale_multi * mut_multi *
-                              integrated_armor_affects_hands ? get_limb_score( limb_score_manip ) : 1;
+                              ( integrated_armor_affects_hands ? get_limb_score( limb_score_manip ) : 1 );
 
     if( light_multi <= 0.0f ) {
         add_msg_if_player( m_bad, _( "You can no longer see well enough to keep crafting." ) );
