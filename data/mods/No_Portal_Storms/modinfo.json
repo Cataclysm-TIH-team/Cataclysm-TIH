@@ -3,27 +3,27 @@
     "type": "MOD_INFO",
     "id": "no_portal_storms",
     "name": "Disable portal storms",
-    "authors": ["Night-Pryanik"],
+    "authors": [ "Night-Pryanik" ],
     "description": "Completely disables portal storms.",
     "category": "rebalance",
-    "dependencies": ["dda"]
+    "dependencies": [ "dda" ]
   },
   {
     "type": "effect_on_condition",
     "id": "EOC_PORTAL_STORM_WARN_OR_CAUSE_RECURRING",
     "global": true,
-    "effect": []
+    "effect": [  ]
   },
   {
     "type": "effect_on_condition",
     "id": "EOC_CAUSE_EARLY_PORTAL_STORM",
     "global": true,
-    "effect": []
+    "effect": [  ]
   },
   {
     "type": "effect_on_condition",
     "id": "EOC_CAUSE_PORTAL_STORM",
     "global": true,
-    "effect": []
+    "effect": [  ]
   }
 ]
