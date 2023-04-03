@@ -2621,6 +2621,11 @@ void options_manager::add_options_world_default()
              0.0, 10.0, 1.0, 0.01
            );
 
+        add( "SPAWN_RATE_ma_manuals", page_id, to_translation( "Martial arts manuals" ),
+             to_translation( "Spawn rate for items from MARTIAL ARTS MANUALS category." ),
+             0.0, 10.0, 1.0, 0.01
+           );
+
         add( "SPAWN_RATE_books", page_id, to_translation( "Books" ),
              to_translation( "Spawn rate for items from BOOKS category." ),
              0.0, 10.0, 1.0, 0.01
