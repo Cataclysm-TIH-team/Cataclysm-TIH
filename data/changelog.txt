@@ -18,6 +18,7 @@ Show gender on NPC
 
 ## Mods
 Added Generic Trash mod which converts mostly useless fluff items into a generic metal/wood/ceramic etc junk
+Added No Portal Storms mod which completely disables portal storms
 
 # 0.H
 
