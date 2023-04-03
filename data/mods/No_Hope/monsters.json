@@ -6,7 +6,6 @@
     "description": "The TX-5LR Cerberus is an upgrade to its predecessors.  It features a state of the art revolving laser cannon system with three barrels that charge from high-capacity batteries embedded in its hull.",
     "default_faction": "military",
     "species": [ "ROBOT" ],
-    "diff": 20,
     "volume": "30000 ml",
     "weight": "40750 g",
     "hp": 30,
@@ -25,8 +24,8 @@
       {
         "type": "gun",
         "cooldown": 1,
-        "gun_type": "laser_cannon",
-        "fake_skills": [ [ "gun", 4 ], [ "rifle", 8 ] ],
+        "gun_type": "v29_turret",
+        "fake_skills": [ [ "gun", 4 ], [ "pistol", 4 ] ],
         "ranges": [ [ 0, 30, "DEFAULT" ] ]
       }
     ],
