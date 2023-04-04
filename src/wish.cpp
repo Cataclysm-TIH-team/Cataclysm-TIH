@@ -397,8 +397,9 @@ void debug_menu::wishbionics( Character *you )
                         upbio_uid = ( *upbio )->get_uid();
                     }
 
-                    you->perform_install( bio, upbio_uid, difficulty, success, level, "NOT_MED", bio->canceled_mutations,
-                                       you->pos() );
+                    you->perform_install( bio, upbio_uid, difficulty, success, level, "NOT_MED",
+                                          bio->canceled_mutations,
+                                          you->pos() );
                 }
                 break;
             }
