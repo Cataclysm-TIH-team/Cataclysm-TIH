@@ -1834,7 +1834,7 @@ static void character_edit_menu()
         nmenu.addentry( D_KILL_XP, true, 'X', "%s", _( "Set kill XP" ) );
     }
     nmenu.addentry( D_MUTATE, true, 'u', "%s", _( "Mutate" ) );
-    nmenu.addentry( D_BIONICS, true, 'b',  _( "Edit [b]ionics" ) ),
+    nmenu.addentry( D_BIONICS, true, 'b', "%s",  _( "Edit [b]ionics" ) ),
                     nmenu.addentry( D_STATUS, true,
                                     hotkey_for_action( ACTION_PL_INFO, /*maximum_modifier_count=*/1 ),
                                     "%s", _( "Status window" ) );
