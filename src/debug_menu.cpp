@@ -1834,10 +1834,10 @@ static void character_edit_menu()
         nmenu.addentry( D_KILL_XP, true, 'X', "%s", _( "Set kill XP" ) );
     }
     nmenu.addentry( D_MUTATE, true, 'u', "%s", _( "Mutate" ) );
-    nmenu.addentry( D_BIONICS, true, 'b', "%s",  _( "Edit [b]ionics" ) ),
-                    nmenu.addentry( D_STATUS, true,
-                                    hotkey_for_action( ACTION_PL_INFO, /*maximum_modifier_count=*/1 ),
-                                    "%s", _( "Status window" ) );
+    nmenu.addentry( D_BIONICS, true, 'b', "%s", _( "Edit [b]ionics" ) );
+    nmenu.addentry( D_STATUS, true,
+                    hotkey_for_action( ACTION_PL_INFO, /*maximum_modifier_count=*/1 ),
+                    "%s", _( "Status window" ) );
     nmenu.addentry( D_TELE, true, 'e', "%s", _( "Teleport" ) );
     nmenu.addentry( D_ADD_EFFECT, true, 'E', "%s", _( "Add an effect" ) );
     nmenu.addentry( D_CHECK_TEMP, true, 'U', "%s", _( "Print temperature" ) );
