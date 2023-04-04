@@ -1,7 +1,6 @@
 name: "Experimental Release"
 concurrency: release
 on:
-  workflow_dispatch:
   push:
     branches:
       - master
@@ -30,7 +29,6 @@ jobs:
       upload_url: ${{ steps.create_release.outputs.upload_url }}
       timestamp: ${{ steps.get-timestamp.outputs.time }}
       release_already_exists: ${{ steps.tag_check.outputs.exists }}
-      matrix: ${{ steps.matrix.outputs.matrix }}
     steps:
       - name: Get build timestamp
         id: get-timestamp
@@ -80,13 +78,13 @@ jobs:
           body_path: ./CHANGELOG.md
           draft: false
           prerelease: true
-      - name: Generate matrix list
-        id: matrix
-        if: ${{ steps.tag_check.outputs.exists == 'false' }}
-        run: |
-          pip3 install ruamel.yaml
-          python3 -c "
-          matrix = '''
+  builds:
+    needs: release
+    if: ${{ needs.release.outputs.release_already_exists == 'false' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
           - name: Windows Tiles x64 MSVC
             artifact: windows-tiles-x64-msvc
             arch: x64
@@ -181,19 +179,6 @@ jobs:
             artifact: android-bundle
             ext: aab
             content: application/aap
-          '''
-          from ruamel.yaml import YAML; yaml = YAML()
-          matrix = yaml.load(matrix)
-          if not '${{ secrets.KEYSTORE }}': matrix = [i for i in matrix if i.get('android', 'none') == 'none']
-          import json; print('matrix='+json.dumps(matrix))
-          " >> $GITHUB_OUTPUT
-  builds:
-    needs: release
-    if: ${{ needs.release.outputs.matrix }}
-    strategy:
-      fail-fast: false
-      matrix:
-        include: ${{ fromJson(needs.release.outputs.matrix) }}
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
     env:
