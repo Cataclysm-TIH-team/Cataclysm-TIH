@@ -345,7 +345,7 @@ void debug_menu::wishmutate( Character *you )
     } while( wmenu.ret >= 0 );
 }
 
-void debug_menu::wishbionics( Character &c )
+void debug_menu::wishbionics( Character *you )
 {
     std::vector<const itype *> cbm_items = item_controller->find( []( const itype & itm ) -> bool {
         return itm.can_use( "install_bionic" );
@@ -355,9 +355,9 @@ void debug_menu::wishbionics( Character &c )
     } );
 
     while( true ) {
-        units::energy power_level = c.get_power_level();
-        units::energy power_max = c.get_max_power_level();
-        size_t num_installed = c.get_bionics().size();
+        units::energy power_level = you->get_power_level();
+        units::energy power_max = you->get_max_power_level();
+        size_t num_installed = you->get_bionics().size();
 
         bool can_uninstall = num_installed > 0;
         bool can_uninstall_all = can_uninstall || power_max > 0_J;
@@ -381,7 +381,7 @@ void debug_menu::wishbionics( Character &c )
             case 0: {
                 uilist scbms;
                 for( size_t i = 0; i < cbm_items.size(); i++ ) {
-                    bool enabled = !c.has_bionic( cbm_items[i]->bionic->id );
+                    bool enabled = !you->has_bionic( cbm_items[i]->bionic->id );
                     scbms.addentry( i, enabled, MENU_AUTOASSIGN, "%s", cbm_items[i]->nname( 1 ) );
                 }
                 scbms.query();
@@ -393,17 +393,17 @@ void debug_menu::wishbionics( Character &c )
                     constexpr int level = 99;
 
                     bionic_uid upbio_uid = 0;
-                    if( std::optional<bionic *> upbio = c.find_bionic_by_type( bio->upgraded_bionic ) ) {
+                    if( std::optional<bionic *> upbio = you->find_bionic_by_type( bio->upgraded_bionic ) ) {
                         upbio_uid = ( *upbio )->get_uid();
                     }
 
-                    c.perform_install( bio, upbio_uid, difficulty, success, level, "NOT_MED", bio->canceled_mutations,
-                                       c.pos() );
+                    you->perform_install( bio, upbio_uid, difficulty, success, level, "NOT_MED", bio->canceled_mutations,
+                                       you->pos() );
                 }
                 break;
             }
             case 1: {
-                const bionic_collection &installed_bionics = *c.my_bionics;
+                const bionic_collection &installed_bionics = *you->my_bionics;
                 std::vector<std::string> bionic_names;
                 std::vector<const bionic *> bionics;
                 for( const bionic &bio : installed_bionics ) {
@@ -417,21 +417,21 @@ void debug_menu::wishbionics( Character &c )
                     return;
                 }
 
-                c.remove_bionic( *bionics[bionic_index] );
+                you->remove_bionic( *bionics[bionic_index] );
                 break;
             }
             case 2: {
-                c.clear_bionics();
-                c.set_power_level( units::from_kilojoule( 0 ) );
-                c.set_max_power_level( units::from_kilojoule( 0 ) );
+                you->clear_bionics();
+                you->set_power_level( units::from_kilojoule( 0 ) );
+                you->set_max_power_level( units::from_kilojoule( 0 ) );
                 break;
             }
             case 3: {
                 int new_value = 0;
                 if( query_int( new_value, _( "Set the value to (in kJ)?  Currently: %s" ),
                                units::display( power_max ) ) ) {
-                    c.set_max_power_level( units::from_kilojoule( new_value ) );
-                    c.set_power_level( c.get_power_level() );
+                    you->set_max_power_level( units::from_kilojoule( new_value ) );
+                    you->set_power_level( you->get_power_level() );
                 }
                 break;
             }
@@ -439,8 +439,8 @@ void debug_menu::wishbionics( Character &c )
                 int new_value = 0;
                 if( query_int( new_value, _( "Set the value to (in J)?  Currently: %s" ),
                                units::display( power_max ) ) ) {
-                    c.set_max_power_level( units::from_joule( new_value ) );
-                    c.set_power_level( c.get_power_level() );
+                    you->set_max_power_level( units::from_joule( new_value ) );
+                    you->set_power_level( you->get_power_level() );
                 }
                 break;
             }
@@ -448,7 +448,7 @@ void debug_menu::wishbionics( Character &c )
                 int new_value = 0;
                 if( query_int( new_value, _( "Set the value to (in kJ)?  Currently: %s" ),
                                units::display( power_level ) ) ) {
-                    c.set_power_level( units::from_kilojoule( new_value ) );
+                    you->set_power_level( units::from_kilojoule( new_value ) );
                 }
                 break;
             }
@@ -456,7 +456,7 @@ void debug_menu::wishbionics( Character &c )
                 int new_value = 0;
                 if( query_int( new_value, _( "Set the value to (in J)?  Currently: %s" ),
                                units::display( power_level ) ) ) {
-                    c.set_power_level( units::from_joule( new_value ) );
+                    you->set_power_level( units::from_joule( new_value ) );
                 }
                 break;
             }

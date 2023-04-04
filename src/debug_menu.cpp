@@ -1989,7 +1989,7 @@ static void character_edit_menu()
             break;
         }
         case D_BIONICS:
-            wishbionics( *you.as_character() );
+            wishbionics( &you );
             break;
         case D_HEALTHY: {
             uilist smenu;
