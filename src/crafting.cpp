@@ -1160,6 +1160,14 @@ Character::craft_roll_data Character::recipe_failure_roll_data( const recipe &ma
 
 float Character::crafting_success_roll( const recipe &making ) const
 {
+    const time_duration max_duration = 10_seconds;
+
+    if( making.difficulty <= 1 ||
+        making.time_to_craft( get_player_character(),
+                              recipe_time_flag::ignore_proficiencies ) <= max_duration ) {
+        return 1.f;
+    }
+
     craft_roll_data data = recipe_success_roll_data( making );
     float craft_roll = std::max( normal_roll( data.center, data.stddev ), 0.0 );
 
