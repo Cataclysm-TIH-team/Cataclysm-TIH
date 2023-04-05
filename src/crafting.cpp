@@ -1215,6 +1215,14 @@ static float normal_roll_chance( float center, float stddev, float difficulty )
 
 float Character::recipe_success_chance( const recipe &making ) const
 {
+    const time_duration max_duration = 10_seconds;
+
+    if( making.difficulty <= 1 ||
+        making.time_to_craft( get_player_character(),
+                              recipe_time_flag::ignore_proficiencies ) <= max_duration ) {
+        return 1.f;
+    }
+
     // We calculate the failure chance of a recipe by performing a normal roll with a given
     // standard deviation and center, then subtracting a "final difficulty" score from that.
     // If that result is above 1, there is no chance of failure.
@@ -1225,6 +1233,14 @@ float Character::recipe_success_chance( const recipe &making ) const
 
 float Character::item_destruction_chance( const recipe &making ) const
 {
+    const time_duration max_duration = 10_seconds;
+
+    if( making.difficulty <= 1 ||
+        making.time_to_craft( get_player_character(),
+                              recipe_time_flag::ignore_proficiencies ) <= max_duration ) {
+        return 0.f;
+    }
+
     // If a normal roll with these parameters rolls over 1, we will not have a catastrophic failure
     // If we roll under one, we will
     craft_roll_data data = recipe_failure_roll_data( making );
