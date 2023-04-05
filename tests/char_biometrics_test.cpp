@@ -407,10 +407,10 @@ TEST_CASE( "riding various creatures at various sizes", "[avatar][bodyweight]" )
         CHECK( can_mount( dummies_max_height[creature_size::medium], horse ) );
     }
 
-    SECTION( "huge characters can't ride a horse" ) {
-        CHECK( !can_mount( dummies_min_height[creature_size::huge], horse ) );
-        CHECK( !can_mount( dummies_default_height[creature_size::huge], horse ) );
-        CHECK( !can_mount( dummies_max_height[creature_size::huge], horse ) );
+    SECTION( "huge characters can't ride a cow" ) {
+        CHECK( !can_mount( dummies_min_height[creature_size::huge], cow ) );
+        CHECK( !can_mount( dummies_default_height[creature_size::huge], cow ) );
+        CHECK( !can_mount( dummies_max_height[creature_size::huge], cow ) );
     }
 
     SECTION( "only short tiny characters can ride large dogs" ) {

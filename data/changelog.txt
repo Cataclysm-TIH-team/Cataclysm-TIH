@@ -19,6 +19,7 @@ Show gender on NPC
 
 ## Balance
 Increased limit of dragging vehicles from 1000 kg to 5000 kg
+Increased horses carry weight from 20% of their own weight to 35%
 
 ## Mods
 Added Generic Trash mod which converts mostly useless fluff items into a generic metal/wood/ceramic etc junk
