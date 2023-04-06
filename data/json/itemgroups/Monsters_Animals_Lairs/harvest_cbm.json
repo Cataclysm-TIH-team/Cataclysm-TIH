@@ -152,6 +152,7 @@
     "subtype": "distribution",
     "items": [
       [ "bio_climate", 5 ],
+      [ "bio_heli", 5 ],
       [ "bio_digestion", 15 ],
       [ "bio_evap", 15 ],
       [ "bio_fingerhack", 20 ],

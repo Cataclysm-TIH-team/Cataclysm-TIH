@@ -263,7 +263,14 @@
     "type": "item_group",
     "id": "EXODII_CBM_unlocks_weapons_light",
     "//": "To get items from this group in the Exodii CBM store requires finishing missions for their faction and earning their trust",
-    "items": [ [ "bio_blade", 10 ], [ "bio_claws", 10 ], [ "bio_cqb", 10 ], [ "bio_flashbang", 10 ], [ "bio_razors", 10 ] ]
+    "items": [
+      [ "bio_blade", 10 ],
+      [ "bio_claws", 10 ],
+      [ "bio_cqb", 10 ],
+      [ "bio_flashbang", 10 ],
+      [ "bio_razors", 10 ],
+      [ "bio_heli", 10 ]
+    ]
   },
   {
     "type": "item_group",

@@ -1056,6 +1056,17 @@
     "time": "1 s"
   },
   {
+    "id": "bio_heli",
+    "type": "bionic",
+    "name": { "str": "Helicopter Pilot Training" },
+    "description": "Bionic processors and databanks, loaded with experimental helicopter handling training program, are surgically integrated into your nervous system.  While active, this module allows you to fly helicopters.",
+    "occupied_bodyparts": [ [ "head", 3 ] ],
+    "act_cost": "20 J",
+    "react_cost": "20 J",
+    "time": "1 s",
+    "flags": [ "BIONIC_TOGGLED" ]
+  },
+  {
     "id": "bio_hydraulics",
     "type": "bionic",
     "name": { "str": "Hydraulic Muscles" },
