@@ -522,6 +522,18 @@
     "installation_data": "AID_bio_heatsink"
   },
   {
+    "id": "bio_heli",
+    "copy-from": "bionic_general",
+    "type": "BIONIC_ITEM",
+    "name": { "str": "Helicopter Pilot Training CBM" },
+    "looks_like": "bio_int_enhancer",
+    "description": "A set of bionic processors and databanks, loaded with experimental helicopter handling training program, are surgically integrated into your nervous system.  While active, this module allows you to fly helicopters.",
+    "price": 220000,
+    "price_postapoc": 3000,
+    "weight": "250 g",
+    "difficulty": 8
+  },
+  {
     "id": "bio_hydraulics",
     "copy-from": "bionic_general_npc_usable",
     "type": "BIONIC_ITEM",
