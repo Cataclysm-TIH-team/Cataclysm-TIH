@@ -112,8 +112,8 @@ static const activity_id ACT_WAIT( "ACT_WAIT" );
 static const activity_id ACT_WAIT_STAMINA( "ACT_WAIT_STAMINA" );
 static const activity_id ACT_WAIT_WEATHER( "ACT_WAIT_WEATHER" );
 
-static const bionic_id bio_remote( "bio_remote" );
 static const bionic_id bio_heli( "bio_heli" );
+static const bionic_id bio_remote( "bio_remote" );
 
 static const efftype_id effect_alarm_clock( "alarm_clock" );
 static const efftype_id effect_incorporeal( "incorporeal" );
