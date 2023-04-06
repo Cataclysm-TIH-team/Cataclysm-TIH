@@ -10,6 +10,7 @@ Player character won't fail at crafting items from very fast (time to craft <=10
 
 ## Content
 Returned back previously obsoleted SPIW weapons
+Added Helicopter Pilot Training CBM which allows flying helicopters even without proficiency
 
 ## Interface
 Item categories spawn rate is now located in game options rather than hidden in json
