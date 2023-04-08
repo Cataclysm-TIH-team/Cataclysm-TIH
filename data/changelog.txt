@@ -11,6 +11,8 @@ Player character won't fail at crafting items from very fast (time to craft <=10
 ## Content
 Returned back previously obsoleted SPIW weapons
 Added Helicopter Pilot Training CBM which allows flying helicopters even without proficiency
+Added ability to remove plants from planters without destroying planter
+Enabled auto-pulping acidic zombies if player is acid-protected
 
 ## Interface
 Item categories spawn rate is now located in game options rather than hidden in json
