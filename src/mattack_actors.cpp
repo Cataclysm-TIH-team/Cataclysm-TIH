@@ -832,26 +832,6 @@ int gun_actor::get_max_range()  const
     return max_range;
 }
 
-static vehicle *find_target_vehicle( monster &z, int range )
-{
-    map &here = get_map();
-    vehicle *chosen = nullptr;
-    for( wrapped_vehicle &v : here.get_vehicles() ) {
-        if( !z.sees( v.pos ) ) {
-            continue;
-        }
-        if( !fov_3d && v.pos.z != z.pos().z ) {
-            continue;
-        }
-        int new_dist = rl_dist( z.pos(), v.pos );
-        if( v.v->velocity != 0 && new_dist < range ) {
-            chosen = v.v;
-            range = new_dist;
-        }
-    }
-    return chosen;
-}
-
 bool gun_actor::call( monster &z ) const
 {
     Creature *target;
@@ -876,27 +856,18 @@ bool gun_actor::call( monster &z ) const
         aim_at = target->pos();
     } else {
         target = z.attack_target();
+        aim_at = target ? target->pos() : tripoint_zero;
         if( !target || !z.sees( *target ) || ( !target->is_monster() && !z.aggro_character ) ) {
             if( !target_moving_vehicles ) {
                 return false;
             }
-            //No living targets, try to find a moving car
-            vehicle *veh = find_target_vehicle( z, get_max_range() );
-            if( !veh ) {
+            untargeted = true; // no living targets, try to find moving car parts
+            const std::set<tripoint_bub_ms> moving_veh_parts = get_map()
+                    .get_moving_vehicle_targets( z, get_max_range() );
+            if( moving_veh_parts.empty() ) {
                 return false;
             }
-            for( const vpart_reference &vp : veh->get_avail_parts( "CONTROLS" ) ) {
-                if( z.sees( vp.pos() ) ) {
-                    aim_at = vp.pos();
-                    untargeted = true;
-                }
-            }
-            if( !untargeted ) {
-                untargeted = true;
-                aim_at = veh->global_pos3();
-            }
-        } else {
-            aim_at = target->pos();
+            aim_at = random_entry( moving_veh_parts, tripoint_bub_ms() ).raw();
         }
     }
 
