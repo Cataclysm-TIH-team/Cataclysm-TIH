@@ -1743,7 +1743,7 @@ bool monster::melee_attack( Creature &target, float accuracy )
             } else if( target.is_npc() && target_dodging ) {
                 add_msg( _( "%1$s dodges %2$s attack." ),
                          target.disp_name(), u_see_me ? name() : _( "something" ) );
-            } else {
+            } else if( get_option<bool>( "LOG_MONSTER_ATTACK_MONSTER" ) ) {
                 add_msg( _( "%1$s misses %2$s!" ),
                          u_see_me ? disp_name( false, true ) : _( "Something" ), target.disp_name() );
             }
@@ -1779,13 +1779,15 @@ bool monster::melee_attack( Creature &target, float accuracy )
                     add_msg( m_good, _( "Your %1$s hits %2$s for %3$d damage!" ), get_name(), target.disp_name(),
                              total_dealt );
                 }
-                if( !u_see_me && u_see_target ) {
-                    add_msg( _( "Something hits the %1$s!" ), target.disp_name() );
-                } else if( !u_see_target ) {
-                    add_msg( _( "The %1$s hits something!" ), name() );
-                } else {
-                    //~ %1$s: attacker name, %2$s: target creature name
-                    add_msg( _( "The %1$s hits %2$s!" ), name(), target.disp_name() );
+                if( get_option<bool>( "LOG_MONSTER_ATTACK_MONSTER" ) ) {
+                    if( !u_see_me && u_see_target ) {
+                        add_msg( _( "Something hits the %1$s!" ), target.disp_name() );
+                    } else if( !u_see_target ) {
+                        add_msg( _( "The %1$s hits something!" ), name() );
+                    } else {
+                        //~ %1$s: attacker name, %2$s: target creature name
+                        add_msg( _( "The %1$s hits %2$s!" ), name(), target.disp_name() );
+                    }
                 }
             }
         } else if( target.is_avatar() ) {
@@ -1811,7 +1813,7 @@ bool monster::melee_attack( Creature &target, float accuracy )
                          body_part_name_accusative( dealt_dam.bp_hit ),
                          target.disp_name( true ),
                          target.skin_name() );
-            } else {
+            } else if( get_option<bool>( "LOG_MONSTER_ATTACK_MONSTER" ) ) {
                 //~ $1s is monster name, %2$s is that monster target name,
                 //~ $3s is target armor name.
                 add_msg( _( "%1$s hits %2$s but is stopped by its %3$s." ),
@@ -2023,7 +2025,7 @@ bool monster::move_effects( bool )
         bool immediate_break = type->in_species( species_FISH ) || type->in_species( species_MOLLUSK ) ||
                                type->in_species( species_ROBOT ) || type->bodytype == "snake" || type->bodytype == "blob";
         if( !immediate_break && rng( 0, 900 ) > type->melee_dice * type->melee_sides * 1.5 ) {
-            if( u_see_me ) {
+            if( u_see_me && get_option<bool>( "LOG_MONSTER_MOVE_EFFECTS" ) ) {
                 add_msg( _( "The %s struggles to break free of its bonds." ), name() );
             }
         } else if( immediate_break ) {
@@ -2057,11 +2059,11 @@ bool monster::move_effects( bool )
     }
     if( has_effect( effect_downed ) ) {
         if( rng( 0, 40 ) > type->melee_dice * type->melee_sides * 1.5 ) {
-            if( u_see_me ) {
+            if( u_see_me && get_option<bool>( "LOG_MONSTER_MOVE_EFFECTS" ) ) {
                 add_msg( _( "The %s struggles to stand." ), name() );
             }
         } else {
-            if( u_see_me ) {
+            if( u_see_me && get_option<bool>( "LOG_MONSTER_MOVE_EFFECTS" ) ) {
                 add_msg( _( "The %s climbs to its feet!" ), name() );
             }
             remove_effect( effect_downed );
