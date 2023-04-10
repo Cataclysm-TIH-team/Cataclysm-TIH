@@ -3,16 +3,16 @@
 ## Features:
 Added possibility to configure forest density in game options
 Melee weapons won't be damaged anymore by misses
-Defense bots, turrets, and mi-go scout will now fire at moving vehicles even if they don't see player controlling said vehicles
+Many monsters will now fire at moving vehicles even if they don't see player controlling said vehicles
 Prompt player to return to main menu on character death (aka avoid permadeath)
 Hands encumbrance no longer affects crafting speed, except when it's encumbrance from integrated armor
-Player character won't fail at crafting items from very fast (time to craft <=10 seconds) or very easy (difficulty <=1)
+If player is acid-protected, allow auto-pulping of acidic zombies 
+Player character won't fail at crafting items from very fast (time to craft <=10 seconds) or very easy (difficulty <=1) recipes
 
 ## Content
 Returned back previously obsoleted SPIW weapons
 Added Helicopter Pilot Training CBM which allows flying helicopters even without proficiency
 Added ability to remove plants from planters without destroying planter
-Enabled auto-pulping acidic zombies if player is acid-protected
 
 ## Interface
 Item categories spawn rate is now located in game options rather than hidden in json
