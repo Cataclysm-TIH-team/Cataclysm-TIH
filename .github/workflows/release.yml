@@ -32,10 +32,8 @@ jobs:
     steps:
       - name: Get build timestamp
         id: get-timestamp
-        uses: nanzm/get-time-action@v1.1
-        with:
-          timeZone: 0
-          format: 'YYYY-MM-DD-HHmm'
+        run: |
+          echo "time=$(/bin/date -u "+%Y-%m-%d-%H%M")" >> $GITHUB_OUTPUT
       - name: Generate environmental variables
         id: generate_env_vars
         run: |
