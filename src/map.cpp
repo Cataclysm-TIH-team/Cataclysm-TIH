@@ -483,6 +483,14 @@ std::set<tripoint_bub_ms> map::get_moving_vehicle_targets( const Creature &z, in
         if( rl_dist( zpos, tripoint_bub_ms( v.pos ) ) > max_range + 40 ) {
             continue; // coarse distance filter, 40 = ~24 * sqrt(2) - rough max diameter of a vehicle
         }
+
+        // Neutral monsters will ignore moving vehicles with visible driver until they are moving closer than 5 tiles
+        if( z.sees( get_player_character() ) &&
+            z.attitude_to( get_player_character() ) == Creature::Attitude::NEUTRAL &&
+            rl_dist( zpos, tripoint_bub_ms( v.pos ) ) >= 5 ) {
+            continue;
+        }
+
         for( const vpart_reference &vpr : v.v->get_all_parts() ) {
             const tripoint_bub_ms vppos = static_cast<tripoint_bub_ms>( vpr.pos() );
             if( rl_dist( zpos, vppos ) > max_range ) {
