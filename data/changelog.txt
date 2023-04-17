@@ -13,6 +13,8 @@ Player character won't fail at crafting items from very fast (time to craft <=10
 Returned back previously obsoleted SPIW weapons
 Added Helicopter Pilot Training CBM which allows flying helicopters even without proficiency
 Added ability to remove plants from planters without destroying planter
+Added overhead light to three default shelters
+
 
 ## Interface
 Item categories spawn rate is now located in game options rather than hidden in json
@@ -25,6 +27,7 @@ Added possibility to show or hide several non-player-related messages in the log
 ## Balance
 Increased limit of dragging vehicles from 1000 kg to 5000 kg
 Increased horses carry weight from 20% of their own weight to 35%
+Reverted nerf to nyctophobia trait
 
 ## Mods
 Added Generic Trash mod which converts mostly useless fluff items into a generic metal/wood/ceramic etc junk
