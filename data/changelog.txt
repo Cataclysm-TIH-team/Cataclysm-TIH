@@ -8,13 +8,13 @@ Prompt player to return to main menu on character death (aka avoid permadeath)
 Hands encumbrance no longer affects crafting speed, except when it's encumbrance from integrated armor
 If player is acid-protected, allow auto-pulping of acidic zombies 
 Player character won't fail at crafting items from very fast (time to craft <=10 seconds) or very easy (difficulty <=1) recipes
+Characters with Infection Immune trait no longer need to sterilize bionics prior to installation
 
 ## Content
 Returned back previously obsoleted SPIW weapons
 Added Helicopter Pilot Training CBM which allows flying helicopters even without proficiency
 Added ability to remove plants from planters without destroying planter
 Added overhead light to three default shelters
-
 
 ## Interface
 Item categories spawn rate is now located in game options rather than hidden in json
