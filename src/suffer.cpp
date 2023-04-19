@@ -98,7 +98,6 @@ static const efftype_id effect_nausea( "nausea" );
 static const efftype_id effect_onfire( "onfire" );
 static const efftype_id effect_shakes( "shakes" );
 static const efftype_id effect_sleep( "sleep" );
-static const efftype_id effect_smoke( "smoke" );
 static const efftype_id effect_took_antiasthmatic( "took_antiasthmatic" );
 static const efftype_id effect_took_thorazine( "took_thorazine" );
 static const efftype_id effect_took_xanax( "took_xanax" );
