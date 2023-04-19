@@ -9871,7 +9871,9 @@ bool game::prompt_dangerous_tile( const tripoint &dest_loc ) const
     std::vector<std::string> harmful_stuff = get_dangerous_tile( dest_loc );
 
     if( !harmful_stuff.empty() &&
-        !query_yn( _( "Really step into %s?" ), enumerate_as_string( harmful_stuff ) ) ) {
+        !query_yn( m.get_field( dest_loc, fd_smoke ) ?
+                   _( "Hold your breath and step into %s?" ) :
+                   _( "Really step into %s?" ), enumerate_as_string( harmful_stuff ) ) ) {
         return false;
     }
     if( !harmful_stuff.empty() && u.is_mounted() && m.tr_at( dest_loc ) == tr_ledge ) {

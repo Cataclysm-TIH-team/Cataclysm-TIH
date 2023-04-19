@@ -97,6 +97,7 @@ static const efftype_id effect_narcosis( "narcosis" );
 static const efftype_id effect_nausea( "nausea" );
 static const efftype_id effect_onfire( "onfire" );
 static const efftype_id effect_shakes( "shakes" );
+static const efftype_id effect_smoke( "smoke" );
 static const efftype_id effect_sleep( "sleep" );
 static const efftype_id effect_took_antiasthmatic( "took_antiasthmatic" );
 static const efftype_id effect_took_thorazine( "took_thorazine" );
@@ -204,6 +205,7 @@ static void without_sleep( Character &you, int sleep_deprivation );
 static void from_tourniquet( Character &you );
 static void from_nyctophobia( Character &you );
 static void from_artifact_resonance( Character &you, int amt );
+static void while_holding_breath( Character &you );
 } // namespace suffer
 
 static float addiction_scaling( float at_min, float at_max, float add_lvl )
@@ -1822,6 +1824,20 @@ void suffer::from_artifact_resonance( Character &you, int amt )
     }
 }
 
+void suffer::while_holding_breath( Character &you )
+{
+    you.oxygen--;
+
+    if( you.oxygen == 3 ) {
+        you.add_msg_if_player( m_bad,
+                               _( "You feel that can you hold your breath only for a few seconds more!" ) );
+    }
+
+    if( you.oxygen == 1 ) {
+        you.add_msg_if_player( m_bad, _( "You can't hold your breath anymore and make a deep inhale!" ) );
+    }
+}
+
 void Character::suffer()
 {
     const int current_stim = get_stim();
@@ -1851,6 +1867,10 @@ void Character::suffer()
 
     if( underwater ) {
         suffer::while_underwater( *this );
+    }
+
+    if( get_map().get_field( pos(), fd_smoke ) ) {
+        suffer::while_holding_breath( *this );
     }
 
     suffer::from_addictions( *this );
