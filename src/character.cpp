@@ -254,6 +254,7 @@ static const efftype_id effect_ridden( "ridden" );
 static const efftype_id effect_riding( "riding" );
 static const efftype_id effect_sleep( "sleep" );
 static const efftype_id effect_slept_through_alarm( "slept_through_alarm" );
+static const efftype_id effect_smoke( "smoke" );
 static const efftype_id effect_stunned( "stunned" );
 static const efftype_id effect_tapeworm( "tapeworm" );
 static const efftype_id effect_tied( "tied" );
@@ -647,7 +648,9 @@ int Character::get_oxygen_max() const
 
 bool Character::can_recover_oxygen() const
 {
-    return !has_effect( effect_grabbed, body_part_torso ) && !is_underwater();
+    return !has_effect( effect_grabbed, body_part_torso ) &&
+           !is_underwater() &&
+           !get_map().get_field( pos(), fd_smoke );
 }
 
 void Character::randomize_heartrate()
@@ -5407,6 +5410,8 @@ bool Character::is_immune_effect( const efftype_id &eff ) const
     } else if( eff == effect_corroding ) {
         return is_immune_damage( damage_type::ACID ) || has_trait( trait_SLIMY ) ||
                has_trait( trait_VISCOUS );
+    } else if( eff == effect_smoke ) {
+        return oxygen > 1;
     }
     for( const json_character_flag &flag : eff->immune_flags ) {
         if( has_flag( flag ) ) {
