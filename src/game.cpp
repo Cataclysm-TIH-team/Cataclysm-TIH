@@ -1389,6 +1389,10 @@ static bool cancel_auto_move( Character &you, const std::string &text )
 
 bool game::cancel_activity_or_ignore_query( const distraction_type type, const std::string &text )
 {
+    if( ( !u.activity && !u.has_distant_destination() ) || u.activity.is_distraction_ignored( type ) ) {
+        return false;
+    }
+
     if( u.has_distant_destination() ) {
         if( cancel_auto_move( u, text ) ) {
             return true;
@@ -1397,9 +1401,7 @@ bool game::cancel_activity_or_ignore_query( const distraction_type type, const s
             return false;
         }
     }
-    if( !u.activity || u.activity.is_distraction_ignored( type ) ) {
-        return false;
-    }
+
     const bool force_uc = get_option<bool>( "FORCE_CAPITAL_YN" );
     const auto &allow_key = force_uc ? input_context::disallow_lower_case_or_non_modified_letters
                             : input_context::allow_all_keys;
