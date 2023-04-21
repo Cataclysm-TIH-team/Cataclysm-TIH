@@ -1833,7 +1833,7 @@ void suffer::while_holding_breath( Character &you )
     }
 
     if( you.oxygen == 1 ) {
-        you.add_msg_if_player( m_bad, _( "You can't hold your breath anymore and make a deep inhale!" ) );
+        you.add_msg_if_player( m_bad, _( "You can't hold your breath anymore and inhale deeply!" ) );
     }
 }
 
