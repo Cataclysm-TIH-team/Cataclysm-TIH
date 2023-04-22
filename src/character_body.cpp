@@ -1,12 +1,15 @@
 #include "avatar.h"
 #include "character.h"
+#include "creature_tracker.h"
 #include "display.h"
 #include "flag.h"
 #include "game.h"
 #include "make_static.h"
 #include "map.h"
+#include "map_iterator.h"
 #include "messages.h"
 #include "morale_types.h"
+#include "mtype.h"
 #include "options.h"
 #include "output.h"
 #include "overmapbuffer.h"
@@ -61,7 +64,10 @@ static const json_character_flag json_flag_HEATSINK( "HEATSINK" );
 static const json_character_flag json_flag_HEAT_IMMUNE( "HEAT_IMMUNE" );
 static const json_character_flag json_flag_IGNORE_TEMP( "IGNORE_TEMP" );
 static const json_character_flag json_flag_LIMB_LOWER( "LIMB_LOWER" );
+static const json_character_flag json_flag_NO_DISEASE( "NO_DISEASE" );
 static const json_character_flag json_flag_NO_THIRST( "NO_THIRST" );
+
+static const species_id species_FERAL( "FERAL" );
 
 static const trait_id trait_BARK( "BARK" );
 static const trait_id trait_CHITIN_FUR( "CHITIN_FUR" );
@@ -322,7 +328,32 @@ void Character::update_body( const time_point &from, const time_point &to )
     const int thirty_mins = ticks_between( from, to, 30_minutes );
     if( thirty_mins > 0 ) {
         update_health();
-        get_sick();
+    }
+
+    const bool can_get_sick = !is_npc() && // NPCs are too dumb to handle infections now
+                              !has_flag( json_flag_NO_DISEASE ) && // In a shocking twist, disease immunity prevents diseases
+                              !has_effect( effect_flu ) && // While it's certainly possible to get sick when you already are,
+                              !has_effect( effect_common_cold ); // it wouldn't be very fun.
+
+    if( can_get_sick && calendar::once_every( 1_turns ) ) {
+        map &here = get_map();
+        creature_tracker &creatures = get_creature_tracker();
+        int contacts = 0;
+
+        for( const tripoint &pos : here.points_in_radius( pos(), 1 ) ) {
+            if( monster *const mon = creatures.creature_at<monster>( pos ) ) {
+                if( mon->type->in_species( species_FERAL ) ) {
+                    contacts++;
+                }
+            }
+            if( npc *const who = creatures.creature_at<npc>( pos ) ) {
+                contacts++;
+            }
+        }
+
+        if( contacts > 0 ) {
+            get_sick( contacts );
+        }
     }
 
     if( calendar::once_every( 10_minutes ) ) {

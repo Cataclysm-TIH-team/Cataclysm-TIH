@@ -10,6 +10,7 @@ If player is acid-protected, allow auto-pulping of acidic zombies
 Player character won't fail at crafting items from very fast (time to craft <=10 seconds) or very easy (difficulty <=1) recipes
 Characters with Infection Immune trait no longer need to sterilize bionics prior to installation
 Prompt player to hold his breath upon entering tiles with a smoke
+Player character now will get sick with common cold or flu only after contacts with NPCs or ferals
 
 ## Content
 Returned back previously obsoleted SPIW weapons

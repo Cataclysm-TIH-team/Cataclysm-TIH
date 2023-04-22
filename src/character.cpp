@@ -381,6 +381,7 @@ static const skill_id skill_speech( "speech" );
 static const skill_id skill_swimming( "swimming" );
 static const skill_id skill_throw( "throw" );
 
+static const species_id species_FERAL( "FERAL" );
 static const species_id species_HUMAN( "HUMAN" );
 
 static const start_location_id start_location_sloc_shelter( "sloc_shelter" );
@@ -4987,20 +4988,8 @@ void Character::check_needs_extremes()
     }
 }
 
-void Character::get_sick()
+void Character::get_sick( const int contacts )
 {
-    // NPCs are too dumb to handle infections now
-    if( is_npc() || has_flag( json_flag_NO_DISEASE ) ) {
-        // In a shocking twist, disease immunity prevents diseases.
-        return;
-    }
-
-    if( has_effect( effect_flu ) || has_effect( effect_common_cold ) ) {
-        // While it's certainly possible to get sick when you already are,
-        // it wouldn't be very fun.
-        return;
-    }
-
     // Normal people get sick about 2-4 times/year.
     int base_diseases_per_year = 3;
     if( has_trait( trait_DISRESISTANT ) ) {
@@ -5008,16 +4997,15 @@ void Character::get_sick()
         base_diseases_per_year = 1;
     }
 
-    // This check runs once every 30 minutes, so double to get hours, *24 to get days.
-    const int checks_per_year = 2 * 24 * 365;
+    // Let's presume every hundredth human, feral or not, is a disease carrier
+    const float disease_carrier_chance = contacts * 0.01f;
 
     // Health is in the range [-200,200].
     // Diseases are half as common for every 50 health you gain.
-    float health_factor = std::pow( 2.0f, get_lifestyle() / 50.0f );
-    float env_factor = 1.0f + std::pow( get_env_resist( body_part_mouth ), 0.3f ) / 2.0;
-
-    int disease_rarity = static_cast<int>( checks_per_year * health_factor * env_factor /
-                                           base_diseases_per_year );
+    const float health_factor = std::pow( 2.0f, get_lifestyle() / 50.0f );
+    const float env_factor = 1.0f + std::pow( get_env_resist( body_part_mouth ), 0.3f ) / 2.0;
+    const int disease_rarity = static_cast<int>( health_factor * env_factor /
+                               disease_carrier_chance * base_diseases_per_year );
     add_msg_debug( debugmode::DF_CHAR_HEALTH, "disease_rarity = %d", disease_rarity );
     if( one_in( disease_rarity ) ) {
         if( one_in( 6 ) ) {
