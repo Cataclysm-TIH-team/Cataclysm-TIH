@@ -483,7 +483,10 @@ std::map<distraction_type, std::string> player_activity::get_distractions() cons
 {
     std::map < distraction_type, std::string > res;
     activity_id act_id = id();
-    if( act_id != ACT_AIM && moves_left > 0 ) {
+    avatar &player_character = get_avatar();
+    const bool is_travelling = player_character.has_destination() && !player_character.omt_path.empty();
+
+    if( act_id != ACT_AIM && moves_left > 0 && !is_travelling ) {
         if( uistate.distraction_hostile_close &&
             !is_distraction_ignored( distraction_type::hostile_spotted_near ) ) {
             Creature *hostile_critter = g->is_hostile_very_close( true );
@@ -504,7 +507,6 @@ std::map<distraction_type, std::string> player_activity::get_distractions() cons
         // Nested in the !ACT_AIM to avoid nuisance during combat
         // If this is too bothersome, maybe a list of just ACT_CRAFT, ACT_DIG etc
         if( std::find( consuming.begin(), consuming.end(), act_id ) == consuming.end() ) {
-            avatar &player_character = get_avatar();
             if( uistate.distraction_hunger &&
                 !is_distraction_ignored( distraction_type::hunger ) ) {
                 // Starvation value of 5300 equates to about 5kCal.
