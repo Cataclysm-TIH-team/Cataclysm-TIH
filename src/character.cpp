@@ -4988,7 +4988,7 @@ void Character::check_needs_extremes()
     }
 }
 
-void Character::get_sick( const int contacts )
+void Character::get_sick( int contacts )
 {
     // Normal people get sick about 2-4 times/year.
     int base_diseases_per_year = 3;
