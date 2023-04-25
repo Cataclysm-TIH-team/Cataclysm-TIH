@@ -334,7 +334,7 @@ void Character::update_body( const time_point &from, const time_point &to )
 
     const bool can_get_sick = !is_npc() && // NPCs are too dumb to handle infections now
                               !has_flag( json_flag_NO_DISEASE ) && // In a shocking twist, disease immunity prevents diseases
-                              !has_effect( effect_flu_immunity ) && // While it's certainly possible to get sick when you already are,
+                              !has_effect( effect_flu_immunity ) && // While it's possible to get sick when you already are,
                               !has_effect( effect_common_cold_immunity ); // it wouldn't be very fun.
 
     if( can_get_sick && calendar::once_every( 1_turns ) ) {
