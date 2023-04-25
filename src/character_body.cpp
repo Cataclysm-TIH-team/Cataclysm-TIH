@@ -10,6 +10,7 @@
 #include "messages.h"
 #include "morale_types.h"
 #include "mtype.h"
+#include "npc.h"
 #include "options.h"
 #include "output.h"
 #include "overmapbuffer.h"
@@ -32,8 +33,11 @@ static const efftype_id effect_blisters( "blisters" );
 static const efftype_id effect_cig( "cig" );
 static const efftype_id effect_cold( "cold" );
 static const efftype_id effect_common_cold( "common_cold" );
+static const efftype_id effect_common_cold_immunity( "common_cold_immunity" );
 static const efftype_id effect_disinfected( "disinfected" );
+static const efftype_id effect_fake_common_cold( "fake_common_cold" );
 static const efftype_id effect_flu( "flu" );
+static const efftype_id effect_flu_immunity( "flu_immunity" );
 static const efftype_id effect_frostbite( "frostbite" );
 static const efftype_id effect_frostbite_recovery( "frostbite_recovery" );
 static const efftype_id effect_hot( "hot" );
@@ -66,8 +70,6 @@ static const json_character_flag json_flag_IGNORE_TEMP( "IGNORE_TEMP" );
 static const json_character_flag json_flag_LIMB_LOWER( "LIMB_LOWER" );
 static const json_character_flag json_flag_NO_DISEASE( "NO_DISEASE" );
 static const json_character_flag json_flag_NO_THIRST( "NO_THIRST" );
-
-static const species_id species_FERAL( "FERAL" );
 
 static const trait_id trait_BARK( "BARK" );
 static const trait_id trait_CHITIN_FUR( "CHITIN_FUR" );
@@ -332,8 +334,8 @@ void Character::update_body( const time_point &from, const time_point &to )
 
     const bool can_get_sick = !is_npc() && // NPCs are too dumb to handle infections now
                               !has_flag( json_flag_NO_DISEASE ) && // In a shocking twist, disease immunity prevents diseases
-                              !has_effect( effect_flu ) && // While it's certainly possible to get sick when you already are,
-                              !has_effect( effect_common_cold ); // it wouldn't be very fun.
+                              !has_effect( effect_flu_immunity ) && // While it's certainly possible to get sick when you already are,
+                              !has_effect( effect_common_cold_immunity ); // it wouldn't be very fun.
 
     if( can_get_sick && calendar::once_every( 1_turns ) ) {
         map &here = get_map();
@@ -342,12 +344,14 @@ void Character::update_body( const time_point &from, const time_point &to )
 
         for( const tripoint &pos : here.points_in_radius( pos(), 1 ) ) {
             if( monster *const mon = creatures.creature_at<monster>( pos ) ) {
-                if( mon->type->in_species( species_FERAL ) ) {
+                if( mon->has_effect( effect_fake_common_cold ) ) {
                     contacts++;
                 }
             }
             if( npc *const who = creatures.creature_at<npc>( pos ) ) {
-                contacts++;
+                if( who->has_effect( effect_fake_common_cold ) ) {
+                    contacts++;
+                }
             }
         }
 

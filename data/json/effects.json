@@ -2575,6 +2575,17 @@
   },
   {
     "type": "effect_type",
+    "id": "common_cold_immunity",
+    "show_in_info": false
+  },
+  {
+    "type": "effect_type",
+    "id": "fake_common_cold",
+    "resist_effects": [ "took_flumed" ],
+    "show_in_info": false
+  },
+  {
+    "type": "effect_type",
     "id": "flu",
     "name": [ "Influenza" ],
     "desc": [
@@ -2600,6 +2611,11 @@
       "vomit_chance": [ 3600, 7200 ]
     },
     "blood_analysis_description": "Viral Infection"
+  },
+  {
+    "type": "effect_type",
+    "id": "flu_immunity",
+    "show_in_info": false
   },
   {
     "type": "effect_type",
