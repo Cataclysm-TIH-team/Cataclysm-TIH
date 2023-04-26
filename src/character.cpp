@@ -313,6 +313,7 @@ static const json_character_flag json_flag_MYOPIC( "MYOPIC" );
 static const json_character_flag json_flag_MYOPIC_IN_LIGHT( "MYOPIC_IN_LIGHT" );
 static const json_character_flag json_flag_NIGHT_VISION( "NIGHT_VISION" );
 static const json_character_flag json_flag_NON_THRESH( "NON_THRESH" );
+static const json_character_flag json_flag_NO_DISEASE( "NO_DISEASE" );
 static const json_character_flag json_flag_NO_RADIATION( "NO_RADIATION" );
 static const json_character_flag json_flag_NO_THIRST( "NO_THIRST" );
 static const json_character_flag json_flag_PRED2( "PRED2" );
@@ -4988,14 +4989,23 @@ void Character::check_needs_extremes()
     }
 }
 
-void Character::get_sick( int contacts )
+bool Character::can_get_sick()
+{
+    avatar &you = get_avatar();
+    return !you.has_flag( json_flag_NO_DISEASE ) &&
+           !you.has_effect( effect_flu_immunity ) &&
+           !you.has_effect( effect_common_cold_immunity );
+}
+
+void Character::get_sick()
 {
     // Health is in the range [-200,200].
     // Diseases are half as common for every 50 health you gain.
     const float health_factor = std::pow( 2.0f, get_lifestyle() / 50.0f );
-    const float env_factor = 1.0f + std::pow( get_env_resist( body_part_mouth ), 0.3f ) / 2.0;
-    const int disease_rarity = static_cast<int>( health_factor + env_factor / contacts );
+    const float env_factor = 2.0f + std::pow( get_env_resist( body_part_mouth ), 0.3f );
+    const int disease_rarity = static_cast<int>( health_factor + env_factor );
     add_msg_debug( debugmode::DF_CHAR_HEALTH, "disease_rarity = %d", disease_rarity );
+
     if( one_in( disease_rarity ) ) {
         // Normal people get sick about 2-4 times/year.
         int base_diseases_per_year = 3;
