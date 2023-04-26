@@ -7,6 +7,7 @@
 
 #include "activity_handlers.h"
 #include "activity_type.h"
+#include "avatar.h"
 #include "bodypart.h"
 #include "calendar.h"
 #include "character.h"
@@ -169,6 +170,14 @@ static void eff_fun_fake_common_cold( Character &u, effect & )
 {
     if( calendar::once_every( time_duration::from_seconds( rng( 30, 300 ) ) ) ) {
         u.cough( true );
+
+        avatar &you = get_avatar();
+        for( const tripoint &pos : get_map().points_in_radius( u.pos(), 1 ) ) {
+            if( you.can_get_sick() && pos == you.pos() ) { // No NPCs for now
+                you.get_sick();
+                break;
+            }
+        }
     }
 }
 

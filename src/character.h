@@ -763,8 +763,10 @@ class Character : public Creature, public visitable
         void calc_sleep_recovery_rate( needs_rates &rates ) const;
         /** Kills the player if too hungry, stimmed up etc., forces tired player to sleep and prints warnings. */
         void check_needs_extremes();
-        /** Handles the chance to be infected by random diseases */
-        void get_sick( int contacts );
+        /** Checks if player can get sick with common cold or flu */
+        bool can_get_sick();
+        /** Handles the chance to be infected by common cold or flu */
+        void get_sick();
         /** Returns if the player has hibernation mutation and is asleep and well fed */
         bool is_hibernating() const;
         /** Maintains body temperature */

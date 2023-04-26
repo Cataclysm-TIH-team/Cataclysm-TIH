@@ -2950,6 +2950,15 @@ void monster::process_one_effect( effect &it, bool is_new )
     } else if( id == effect_fake_common_cold ) {
         if( calendar::once_every( time_duration::from_seconds( rng( 30, 300 ) ) ) ) {
             sounds::sound( pos(), 4, sounds::sound_t::speech, _( "a hacking cough." ), false, "misc", "cough" );
+
+            avatar &you = get_avatar();
+            for( const tripoint &pos : get_map().points_in_radius( pos(), 1 ) ) {
+                if( you.can_get_sick() && pos == you.pos() ) { // No NPCs for now
+                    you.get_sick();
+                    break;
+                }
+            }
+
         }
     }
 }
