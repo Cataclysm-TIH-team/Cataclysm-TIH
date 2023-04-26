@@ -63,6 +63,7 @@ static const efftype_id effect_dermatik( "dermatik" );
 static const efftype_id effect_disabled( "disabled" );
 static const efftype_id effect_downed( "downed" );
 static const efftype_id effect_evil( "evil" );
+static const efftype_id effect_fake_common_cold( "fake_common_cold" );
 static const efftype_id effect_formication( "formication" );
 static const efftype_id effect_frostbite( "frostbite" );
 static const efftype_id effect_fungus( "fungus" );
@@ -163,6 +164,14 @@ static void eff_fun_antifungal( Character &u, effect & )
         u.apply_damage( nullptr, random_bpart, 1 );
     }
 }
+
+static void eff_fun_fake_common_cold( Character &u, effect & )
+{
+    if( calendar::once_every( time_duration::from_seconds( rng( 30, 300 ) ) ) ) {
+        u.cough( true );
+    }
+}
+
 static void eff_fun_fungus( Character &u, effect &it )
 {
     const int intense = it.get_intensity();
@@ -1210,6 +1219,7 @@ void Character::hardcoded_effects( effect &it )
             { effect_hypovolemia, eff_fun_hypovolemia },
             { effect_redcells_anemia, eff_fun_redcells_anemia },
             { effect_sleep, eff_fun_sleep },
+            { effect_fake_common_cold, eff_fun_fake_common_cold },
         }
     };
     const efftype_id &id = it.get_id();

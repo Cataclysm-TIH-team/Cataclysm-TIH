@@ -205,6 +205,7 @@ static const efftype_id effect_boomered( "boomered" );
 static const efftype_id effect_brainworms( "brainworms" );
 static const efftype_id effect_chafing( "chafing" );
 static const efftype_id effect_common_cold( "common_cold" );
+static const efftype_id effect_common_cold_immunity( "common_cold_immunity" );
 static const efftype_id effect_contacts( "contacts" );
 static const efftype_id effect_controlled( "controlled" );
 static const efftype_id effect_corroding( "corroding" );
@@ -218,6 +219,7 @@ static const efftype_id effect_downed( "downed" );
 static const efftype_id effect_drunk( "drunk" );
 static const efftype_id effect_earphones( "earphones" );
 static const efftype_id effect_flu( "flu" );
+static const efftype_id effect_flu_immunity( "flu_immunity" );
 static const efftype_id effect_foodpoison( "foodpoison" );
 static const efftype_id effect_fungus( "fungus" );
 static const efftype_id effect_glowing( "glowing" );
@@ -311,7 +313,6 @@ static const json_character_flag json_flag_MYOPIC( "MYOPIC" );
 static const json_character_flag json_flag_MYOPIC_IN_LIGHT( "MYOPIC_IN_LIGHT" );
 static const json_character_flag json_flag_NIGHT_VISION( "NIGHT_VISION" );
 static const json_character_flag json_flag_NON_THRESH( "NON_THRESH" );
-static const json_character_flag json_flag_NO_DISEASE( "NO_DISEASE" );
 static const json_character_flag json_flag_NO_RADIATION( "NO_RADIATION" );
 static const json_character_flag json_flag_NO_THIRST( "NO_THIRST" );
 static const json_character_flag json_flag_PRED2( "PRED2" );
@@ -4987,45 +4988,31 @@ void Character::check_needs_extremes()
     }
 }
 
-void Character::get_sick()
+void Character::get_sick( int contacts )
 {
-    // NPCs are too dumb to handle infections now
-    if( is_npc() || has_flag( json_flag_NO_DISEASE ) ) {
-        // In a shocking twist, disease immunity prevents diseases.
-        return;
-    }
-
-    if( has_effect( effect_flu ) || has_effect( effect_common_cold ) ) {
-        // While it's certainly possible to get sick when you already are,
-        // it wouldn't be very fun.
-        return;
-    }
-
-    // Normal people get sick about 2-4 times/year.
-    int base_diseases_per_year = 3;
-    if( has_trait( trait_DISRESISTANT ) ) {
-        // Disease resistant people only get sick once a year.
-        base_diseases_per_year = 1;
-    }
-
-    // This check runs once every 30 minutes, so double to get hours, *24 to get days.
-    const int checks_per_year = 2 * 24 * 365;
-
     // Health is in the range [-200,200].
     // Diseases are half as common for every 50 health you gain.
-    float health_factor = std::pow( 2.0f, get_lifestyle() / 50.0f );
-    float env_factor = 1.0f + std::pow( get_env_resist( body_part_mouth ), 0.3f ) / 2.0;
-
-    int disease_rarity = static_cast<int>( checks_per_year * health_factor * env_factor /
-                                           base_diseases_per_year );
+    const float health_factor = std::pow( 2.0f, get_lifestyle() / 50.0f );
+    const float env_factor = 1.0f + std::pow( get_env_resist( body_part_mouth ), 0.3f ) / 2.0;
+    const int disease_rarity = static_cast<int>( health_factor + env_factor / contacts );
     add_msg_debug( debugmode::DF_CHAR_HEALTH, "disease_rarity = %d", disease_rarity );
     if( one_in( disease_rarity ) ) {
+        // Normal people get sick about 2-4 times/year.
+        int base_diseases_per_year = 3;
+        if( has_trait( trait_DISRESISTANT ) ) {
+            // Disease resistant people only get sick once a year.
+            base_diseases_per_year = 1;
+        }
+        const time_duration immunity_duration = calendar::season_length() * 4 / base_diseases_per_year;
+
         if( one_in( 6 ) ) {
             // The flu typically lasts 3-10 days.
             add_effect( effect_flu, rng( 3_days, 10_days ) );
+            add_effect( effect_flu_immunity, immunity_duration );
         } else {
             // A cold typically lasts 1-14 days.
             add_effect( effect_common_cold, rng( 1_days, 14_days ) );
+            add_effect( effect_common_cold_immunity, immunity_duration );
         }
     }
 }
