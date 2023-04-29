@@ -1257,9 +1257,9 @@ void set_stats( tab_manager &tabs, avatar &u, pool_type pool )
                 mvwprintz( w_description, point_zero, ( read_spd == 100 ? COL_STAT_NEUTRAL :
                                                         ( read_spd < 100 ? COL_STAT_BONUS : COL_STAT_PENALTY ) ),
                            _( "Read times: %d%%" ), read_spd );
+                // NOLINTNEXTLINE(cata-use-named-point-constants)
                 mvwprintz( w_description, point( 0, 1 ), COL_STAT_NEUTRAL, _( "Persuade/lie skill: %i" ),
                            u.persuade_skill() );
-                // NOLINTNEXTLINE(cata-use-named-point-constants)
                 mvwprintz( w_description, point( 0, 2 ), COL_STAT_BONUS, _( "Crafting bonus: %2d%%" ),
                            u.get_int() );
                 mvwprintz( w_description, point( 0, 4 ), COL_STAT_NEUTRAL, _( "Affects:" ) );
@@ -1304,6 +1304,7 @@ void set_stats( tab_manager &tabs, avatar &u, pool_type pool )
                     mvwprintz( w_description, point_zero, COL_STAT_PENALTY, _( "Aiming penalty: -%d" ),
                                u.ranged_per_mod() );
                 }
+                // NOLINTNEXTLINE(cata-use-named-point-constants)
                 mvwprintz( w_description, point( 0, 1 ), COL_STAT_NEUTRAL, _( "Persuade/lie skill: %i" ),
                            u.persuade_skill() );
                 mvwprintz( w_description, point( 0, 3 ), COL_STAT_NEUTRAL, _( "Affects:" ) );
