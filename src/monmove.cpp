@@ -2119,6 +2119,8 @@ void monster::knock_back_to( const tripoint &to )
 
     } else { // It's no wall
         setpos( to );
+
+        here.creature_on_trap( *this );
     }
     check_dead_state();
 }
