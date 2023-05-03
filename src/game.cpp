@@ -5604,7 +5604,7 @@ bool game::npc_menu( npc &who )
     amenu.addentry( examine_wounds, true, 'w', _( "Examine wounds" ) );
     amenu.addentry( examine_status, true, 'e', _( "Examine status" ) );
     amenu.addentry( use_item, true, 'i', _( "Use item on" ) );
-    amenu.addentry( sort_armor, true, 'r', _( "Sort armor" ) );
+    amenu.addentry( sort_armor, obeys, 'r', _( "Sort armor" ) );
     amenu.addentry( attack, true, 'a', _( "Attack" ) );
     if( !who.is_player_ally() ) {
         amenu.addentry( disarm, who.is_armed(), 'd', _( "Disarm" ) );
