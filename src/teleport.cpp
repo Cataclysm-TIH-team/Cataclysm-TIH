@@ -142,9 +142,10 @@ bool teleport::teleport_to_point( Creature &critter, tripoint target, bool safe,
                 g->update_map( *p );
             }
             critter.remove_effect( effect_grabbed );
+            here.creature_on_trap( critter );
             return true;
         }
-        //Character *const poor_player = dynamic_cast<Character *>( poor_soul );
+
         if( force ) {
             poor_soul->apply_damage( nullptr, bodypart_id( "torso" ), 9999 );
             poor_soul->check_dead_state();
