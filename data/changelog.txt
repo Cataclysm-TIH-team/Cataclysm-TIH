@@ -11,6 +11,7 @@ Player character won't fail at crafting items from very fast (time to craft <=10
 Characters with Infection Immune trait no longer need to sterilize bionics prior to installation
 Prompt player to hold his breath upon entering tiles with a smoke
 Player character now will get sick with common cold or flu only after contacts with NPCs or ferals
+Player now can order friendly NPCs to move to player-chosen location
 
 ## Content
 Returned back previously obsoleted SPIW weapons
