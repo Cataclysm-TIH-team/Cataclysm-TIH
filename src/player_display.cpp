@@ -1532,7 +1532,7 @@ void Character::disp_info( bool customize_character )
             bionicslist.push_back( { pair.first.name, pair.first.description, pair.second } );
         }
     }
-    const unsigned int bionics_win_size_y_max = 2 + bionicslist.size();
+    const unsigned int bionics_win_size_y_max = 3 + bionicslist.size();
 
     const std::vector<const Skill *> player_skill = Skill::get_skills_sorted_by(
     [&]( const Skill & a, const Skill & b ) {
@@ -1782,12 +1782,12 @@ void Character::disp_info( bool customize_character )
     ui_bionics.on_screen_resize( [&]( ui_adaptor & ui_bionics ) {
         std::tie( trait_win_size_y, bionics_win_size_y ) = calculate_shared_column_win_height(
                     TERMY - infooffsetybottom, trait_win_size_y_max, bionics_win_size_y_max );
-        w_bionics = catacurses::newwin( bionics_win_size_y, grid_width,
+        w_bionics = catacurses::newwin( bionics_win_size_y - 1, grid_width,
                                         point( grid_width * 2 + 2, infooffsetybottom + trait_win_size_y + 1 ) );
-        w_bionics_border = catacurses::newwin( bionics_win_size_y + 2, grid_width + 2,
+        w_bionics_border = catacurses::newwin( bionics_win_size_y + 1, grid_width + 2,
                                                point( grid_width * 2 + 1, infooffsetybottom + trait_win_size_y ) );
         border_bionics.set( point( grid_width * 2 + 1, infooffsetybottom + trait_win_size_y ),
-                            point( grid_width + 2, bionics_win_size_y + 2 ) );
+                            point( grid_width + 2, bionics_win_size_y + 1 ) );
         ui_bionics.position_from_window( w_bionics_border );
     } );
     ui_bionics.mark_resize();
