@@ -1552,7 +1552,7 @@ void Character::disp_info( bool customize_character )
         skillslist.emplace_back( s, false );
     }
 
-    const unsigned int skill_win_size_y_max = 1 + skillslist.size();
+    const unsigned int skill_win_size_y_max = 2 + skillslist.size();
     const unsigned int info_win_size_y = 6;
     const unsigned int grid_height = 10;
     const unsigned int encumbrance_height = 11;
@@ -1734,12 +1734,12 @@ void Character::disp_info( bool customize_character )
             skill_win_size_y = maxy - infooffsetybottom;
         }
 
-        w_skills = catacurses::newwin( skill_win_size_y, grid_width,
+        w_skills = catacurses::newwin( skill_win_size_y - 1, grid_width,
                                        point( grid_width + 1, infooffsetybottom ) );
-        w_skills_border = catacurses::newwin( skill_win_size_y + 2, grid_width + 2,
+        w_skills_border = catacurses::newwin( skill_win_size_y + 1, grid_width + 2,
                                               point( grid_width, infooffsetybottom - 1 ) );
         border_skills.set( point( grid_width, infooffsetybottom - 1 ),
-                           point( grid_width + 2, skill_win_size_y + 2 ) );
+                           point( grid_width + 2, skill_win_size_y + 1 ) );
         ui_skills.position_from_window( w_skills_border );
     } );
     ui_skills.mark_resize();
