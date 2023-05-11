@@ -1552,12 +1552,10 @@ void Character::disp_info( bool customize_character )
         }
         skillslist.emplace_back( s, false );
     }
-    const unsigned int skill_win_size_y_max = 1 + skillslist.size();
-    const unsigned int info_win_size_y = 6;
 
+    const unsigned int info_win_size_y = 6;
     const unsigned int grid_height = 10;
     const unsigned int encumbrance_height = 11;
-
     const unsigned int infooffsetybottom = 3 + info_win_size_y;
 
     // Print name and header
