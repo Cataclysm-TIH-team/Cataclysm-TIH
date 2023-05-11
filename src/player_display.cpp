@@ -1705,10 +1705,12 @@ void Character::disp_info( bool customize_character )
     ui_adaptor ui_speed;
     ui_speed.on_screen_resize( [&]( ui_adaptor & ui_speed ) {
         const int speed_top = grid_height + encumbrance_height + info_win_size_y;
-        w_speed = catacurses::newwin( TERMY - ( speed_top + 6 ), grid_width, point( 0, speed_top + 5 ) );
-        w_speed_border = catacurses::newwin( TERMY - ( speed_top + 4 ), grid_width + 1,
+        w_speed = catacurses::newwin( std::max( 1, TERMY - ( speed_top + 6 ) ), grid_width,
+                                      point( 0, speed_top + 5 ) );
+        w_speed_border = catacurses::newwin( std::max( 1, TERMY - ( speed_top + 4 ) ), grid_width + 1,
                                              point( 0, speed_top + 4 ) );
-        border_speed.set( point( -1, speed_top + 4 ), point( grid_width + 2, TERMY - ( speed_top + 4 ) ) );
+        border_speed.set( point( -1, speed_top + 4 ),
+                          point( grid_width + 2, std::max( 1, TERMY - ( speed_top + 4 ) ) ) );
         ui_speed.position_from_window( w_speed_border );
     } );
     ui_speed.mark_resize();
