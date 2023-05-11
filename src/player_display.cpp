@@ -1635,8 +1635,9 @@ void Character::disp_info( bool customize_character )
         w_info = catacurses::newwin( info_win_size_y, grid_width * 4 + 3, point( 0, 2 ) );
         // NOLINTNEXTLINE(cata-use-named-point-constants)
         w_info_border = catacurses::newwin( info_win_size_y + 2, grid_width * 4 + 4, point( 0, 1 ) );
+        // NOLINTNEXTLINE(cata-use-named-point-constants)
         border_info.set( point( -1, 1 ),
-                         point( grid_width * 4 + 5, info_win_size_y + 2 ) );
+                         point( grid_width * 4 + 5, infooffsetybottom - 1 ) );
         ui_info.position_from_window( w_info_border );
     } );
     ui_info.mark_resize();
