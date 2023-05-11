@@ -1512,7 +1512,7 @@ void Character::disp_info( bool customize_character )
     } ), effect_name_and_text.end() );
 
     const unsigned int effect_win_size_y_max = 1 + effect_name_and_text.size();
-    const unsigned int proficiency_win_size_y_max = 1 + display_proficiencies().size();
+    const unsigned int proficiency_win_size_y_max = 2 + display_proficiencies().size();
 
     std::vector<trait_and_var> traitslist = get_mutations_variants( false );
     std::sort( traitslist.begin(), traitslist.end(), trait_display_sort );
@@ -1553,6 +1553,7 @@ void Character::disp_info( bool customize_character )
         skillslist.emplace_back( s, false );
     }
 
+    const unsigned int skill_win_size_y_max = 1 + skillslist.size();
     const unsigned int info_win_size_y = 6;
     const unsigned int grid_height = 10;
     const unsigned int encumbrance_height = 11;
@@ -1718,17 +1719,24 @@ void Character::disp_info( bool customize_character )
     } );
 
     // SKILLS
+    unsigned int skill_win_size_y = 0;
     catacurses::window w_skills;
     catacurses::window w_skills_border;
     border_helper::border_info &border_skills = borders.add_border();
     ui_adaptor ui_skills;
     ui_skills.on_screen_resize( [&]( ui_adaptor & ui_skills ) {
-        w_skills = catacurses::newwin( TERMY - infooffsetybottom - 1, grid_width,
+        const unsigned int maxy = static_cast<unsigned>( TERMY );
+        skill_win_size_y = skill_win_size_y_max;
+        if( skill_win_size_y + infooffsetybottom > maxy ) {
+            skill_win_size_y = maxy - infooffsetybottom;
+        }
+
+        w_skills = catacurses::newwin( skill_win_size_y, grid_width,
                                        point( grid_width + 1, infooffsetybottom ) );
-        w_skills_border = catacurses::newwin( TERMY - infooffsetybottom + 1, grid_width + 2,
+        w_skills_border = catacurses::newwin( skill_win_size_y + 2, grid_width + 2,
                                               point( grid_width, infooffsetybottom - 1 ) );
         border_skills.set( point( grid_width, infooffsetybottom - 1 ),
-                           point( grid_width + 2, TERMY - infooffsetybottom + 1 ) );
+                           point( grid_width + 2, skill_win_size_y + 2 ) );
         ui_skills.position_from_window( w_skills_border );
     } );
     ui_skills.mark_resize();
@@ -1825,12 +1833,12 @@ void Character::disp_info( bool customize_character )
     ui_proficiencies.on_screen_resize( [&]( ui_adaptor & ui_proficiencies ) {
         std::tie( effect_win_size_y, proficiency_win_size_y ) = calculate_shared_column_win_height(
                     TERMY - infooffsetybottom, effect_win_size_y_max, proficiency_win_size_y_max );
-        w_proficiencies = catacurses::newwin( proficiency_win_size_y, grid_width,
+        w_proficiencies = catacurses::newwin( proficiency_win_size_y - 1, grid_width,
                                               point( grid_width * 3 + 3, infooffsetybottom + effect_win_size_y + 1 ) );
-        w_proficiencies_border = catacurses::newwin( proficiency_win_size_y + 2, grid_width + 2,
+        w_proficiencies_border = catacurses::newwin( proficiency_win_size_y + 1, grid_width + 2,
                                  point( grid_width * 3 + 2, infooffsetybottom + effect_win_size_y ) );
         border_proficiencies.set( point( grid_width * 3 + 2, infooffsetybottom + effect_win_size_y ),
-                                  point( grid_width + 2, proficiency_win_size_y + 2 ) );
+                                  point( grid_width + 2, proficiency_win_size_y + 1 ) );
         ui_proficiencies.position_from_window( w_proficiencies_border );
     } );
     ui_proficiencies.mark_resize();
