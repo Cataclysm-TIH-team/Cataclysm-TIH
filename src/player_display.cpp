@@ -1636,8 +1636,7 @@ void Character::disp_info( bool customize_character )
         // NOLINTNEXTLINE(cata-use-named-point-constants)
         w_info_border = catacurses::newwin( info_win_size_y + 2, grid_width * 4 + 4, point( 0, 1 ) );
         // NOLINTNEXTLINE(cata-use-named-point-constants)
-        border_info.set( point( -1, 1 ),
-                         point( grid_width * 4 + 5, infooffsetybottom - 1 ) );
+        border_info.set( point( -1, 1 ), point( grid_width * 4 + 5, infooffsetybottom - 1 ) );
         ui_info.position_from_window( w_info_border );
     } );
     ui_info.mark_resize();
@@ -1728,8 +1727,8 @@ void Character::disp_info( bool customize_character )
                                        point( grid_width + 1, infooffsetybottom ) );
         w_skills_border = catacurses::newwin( TERMY - infooffsetybottom + 1, grid_width + 2,
                                               point( grid_width, infooffsetybottom - 1 ) );
-        border_skills.set( point( grid_width, infooffsetybottom - 1 ), point( grid_width + 2,
-                           TERMY - infooffsetybottom + 1 ) );
+        border_skills.set( point( grid_width, infooffsetybottom - 1 ),
+                           point( grid_width + 2, TERMY - infooffsetybottom + 1 ) );
         ui_skills.position_from_window( w_skills_border );
     } );
     ui_skills.mark_resize();
@@ -1755,8 +1754,8 @@ void Character::disp_info( bool customize_character )
                                        point( grid_width * 2 + 2, infooffsetybottom ) );
         w_traits_border = catacurses::newwin( trait_win_size_y + 2, grid_width + 2,
                                               point( grid_width * 2 + 1, infooffsetybottom - 1 ) );
-        border_traits.set( point( grid_width * 2 + 1, infooffsetybottom - 1 ), point( grid_width + 2,
-                           trait_win_size_y + 2 ) );
+        border_traits.set( point( grid_width * 2 + 1, infooffsetybottom - 1 ),
+                           point( grid_width + 2, trait_win_size_y + 2 ) );
         ui_traits.position_from_window( w_traits_border );
     } );
     ui_traits.mark_resize();
@@ -1775,12 +1774,12 @@ void Character::disp_info( bool customize_character )
     ui_bionics.on_screen_resize( [&]( ui_adaptor & ui_bionics ) {
         std::tie( trait_win_size_y, bionics_win_size_y ) = calculate_shared_column_win_height(
                     TERMY - infooffsetybottom, trait_win_size_y_max, bionics_win_size_y_max );
-        w_bionics = catacurses::newwin( bionics_win_size_y - 1, grid_width,
+        w_bionics = catacurses::newwin( bionics_win_size_y, grid_width,
                                         point( grid_width * 2 + 2, infooffsetybottom + trait_win_size_y + 1 ) );
-        w_bionics_border = catacurses::newwin( bionics_win_size_y + 1, grid_width + 2,
+        w_bionics_border = catacurses::newwin( bionics_win_size_y + 2, grid_width + 2,
                                                point( grid_width * 2 + 1, infooffsetybottom + trait_win_size_y ) );
         border_bionics.set( point( grid_width * 2 + 1, infooffsetybottom + trait_win_size_y ),
-                            point( grid_width + 2, bionics_win_size_y + 1 ) );
+                            point( grid_width + 2, bionics_win_size_y + 2 ) );
         ui_bionics.position_from_window( w_bionics_border );
     } );
     ui_bionics.mark_resize();
@@ -1806,8 +1805,8 @@ void Character::disp_info( bool customize_character )
                                         point( grid_width * 3 + 3, infooffsetybottom ) );
         w_effects_border = catacurses::newwin( effect_win_size_y + 2, grid_width + 2,
                                                point( grid_width * 3 + 2, infooffsetybottom - 1 ) );
-        border_effects.set( point( grid_width * 3 + 2, infooffsetybottom - 1 ), point( grid_width + 2,
-                            effect_win_size_y + 2 ) );
+        border_effects.set( point( grid_width * 3 + 2, infooffsetybottom - 1 ),
+                            point( grid_width + 2, effect_win_size_y + 2 ) );
         ui_effects.position_from_window( w_effects_border );
     } );
     ui_effects.mark_resize();
@@ -1826,12 +1825,12 @@ void Character::disp_info( bool customize_character )
     ui_proficiencies.on_screen_resize( [&]( ui_adaptor & ui_proficiencies ) {
         std::tie( effect_win_size_y, proficiency_win_size_y ) = calculate_shared_column_win_height(
                     TERMY - infooffsetybottom, effect_win_size_y_max, proficiency_win_size_y_max );
-        w_proficiencies = catacurses::newwin( proficiency_win_size_y - 1, grid_width,
+        w_proficiencies = catacurses::newwin( proficiency_win_size_y, grid_width,
                                               point( grid_width * 3 + 3, infooffsetybottom + effect_win_size_y + 1 ) );
-        w_proficiencies_border = catacurses::newwin( proficiency_win_size_y + 1, grid_width + 2,
+        w_proficiencies_border = catacurses::newwin( proficiency_win_size_y + 2, grid_width + 2,
                                  point( grid_width * 3 + 2, infooffsetybottom + effect_win_size_y ) );
         border_proficiencies.set( point( grid_width * 3 + 2, infooffsetybottom + effect_win_size_y ),
-                                  point( grid_width + 2, proficiency_win_size_y + 1 ) );
+                                  point( grid_width + 2, proficiency_win_size_y + 2 ) );
         ui_proficiencies.position_from_window( w_proficiencies_border );
     } );
     ui_proficiencies.mark_resize();
