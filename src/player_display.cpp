@@ -69,8 +69,6 @@ static const std::string title_BIONICS = translate_marker( "BIONICS" );
 static const std::string title_TRAITS = translate_marker( "TRAITS" );
 static const std::string title_PROFICIENCIES = translate_marker( "PROFICIENCIES" );
 
-static const unsigned int grid_width = 26;
-
 // Rescale temperature value to one that the player sees
 static int temperature_print_rescaling( int temp )
 {
@@ -783,6 +781,7 @@ static void draw_skills_tab( ui_adaptor &ui, const catacurses::window &w_skills,
                              std::vector<HeaderSkill> &skillslist,
                              const size_t skill_win_size_y )
 {
+    unsigned int grid_width = get_option<int>( "COLUMN_WIDTH" );
     const int col_width = getmaxx( w_skills ) - 1;
 
     werase( w_skills );
@@ -1613,6 +1612,8 @@ void Character::disp_info( bool customize_character )
     unsigned int line = 0;
     unsigned int info_line = 0;
     int tip_btn_highlight = -1;
+
+    unsigned int grid_width = get_option<int>( "COLUMN_WIDTH" );
 
     catacurses::window w_tip;
     ui_adaptor ui_tip;
