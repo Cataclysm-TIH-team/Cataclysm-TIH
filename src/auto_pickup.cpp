@@ -298,7 +298,8 @@ void user_interface::show()
 
         w_border = catacurses::newwin( TERMY, min_screen_width, point( offset, 0 ) );
         w_header = catacurses::newwin( 10, min_screen_width - 2, point( 1 + offset, 1 ) );
-        w = catacurses::newwin( content_height, min_screen_width - 2, point( 1 + offset, header_height + 1 ) );
+        w = catacurses::newwin( content_height, min_screen_width - 2, point( 1 + offset,
+                                header_height + 1 ) );
 
         ui.position_from_window( w_border );
     };
@@ -314,7 +315,7 @@ void user_interface::show()
     ui.on_redraw( [&]( const ui_adaptor & ) {
         // Redraw the border
         draw_border( w_border, BORDER_COLOR, title );
-        
+
         mvwputch( w_border, point( 0, 4 ), c_light_gray, LINE_XXXO ); // |-
         mvwputch( w_border, point( getmaxx( w_border ) - 1, 4 ), c_light_gray, LINE_XOXX ); // -|
         mvwputch( w_border, point( 05, TERMY - 1 ), c_light_gray, LINE_XXOX ); // _|_
@@ -358,7 +359,7 @@ void user_interface::show()
             const nc_color color = iTab == i ? hilite( c_white ) : c_white;
             locx += shortcut_print( w_header, point( locx, 3 ), c_white, color, tabs[i].title ) + 1;
         }
-        
+
         locx = 0;
         const std::string autopickup_enabled_text = _( "Auto pickup enabled:" );
         mvwprintz( w_header, point( locx, 2 ), c_white, autopickup_enabled_text );
