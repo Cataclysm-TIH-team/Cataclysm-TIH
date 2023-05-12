@@ -179,6 +179,7 @@ void safemode::show( const std::string &custom_name_in, bool is_safemode_in )
                                 ( get_option<bool>( "SAFEMODE" ) ? _( "True" ) : _( "False" ) ) );
         locx += shortcut_print( w_header, point( locx + 1, 2 ), c_white, c_light_green, "  " );
         locx += shortcut_print( w_header, point( locx, 2 ), c_white, c_light_green, _( "<S>witch" ) );
+        shortcut_print( w_header, point( locx, 2 ), c_white, c_light_green, "  " );
 
         for( auto &pos : column_pos ) {
             mvwputch( w_header, point( pos.second, 3 ), c_light_gray, LINE_OXXX ); // ^|^

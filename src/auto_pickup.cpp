@@ -282,8 +282,8 @@ void user_interface::show()
         return;
     }
 
-    const int iHeaderHeight = 4;
-    int iContentHeight = 0;
+    const int header_height = 5;
+    int content_height = 0;
 
     catacurses::window w_border;
     catacurses::window w_header;
@@ -292,16 +292,14 @@ void user_interface::show()
     ui_adaptor ui;
 
     const auto init_windows = [&]( ui_adaptor & ui ) {
-        iContentHeight = FULL_SCREEN_HEIGHT - 2 - iHeaderHeight;
-        const point iOffset( TERMX > FULL_SCREEN_WIDTH ? ( TERMX - FULL_SCREEN_WIDTH ) / 2 : 0,
-                             TERMY > FULL_SCREEN_HEIGHT ? ( TERMY - FULL_SCREEN_HEIGHT ) / 2 : 0 );
+        content_height = TERMY - 2 - header_height;
+        const int min_screen_width = std::max( FULL_SCREEN_WIDTH, TERMX / 2 );
+        const int offset = TERMX > FULL_SCREEN_WIDTH ? ( TERMX - min_screen_width ) / 2 : 0;
 
-        w_border = catacurses::newwin( FULL_SCREEN_HEIGHT, FULL_SCREEN_WIDTH,
-                                       iOffset );
-        w_header = catacurses::newwin( iHeaderHeight, FULL_SCREEN_WIDTH - 2,
-                                       iOffset + point_south_east );
-        w = catacurses::newwin( iContentHeight, FULL_SCREEN_WIDTH - 2,
-                                iOffset + point( 1, iHeaderHeight + 1 ) );
+        w_border = catacurses::newwin( TERMY, min_screen_width, point( offset, 0 ) );
+        w_header = catacurses::newwin( 10, min_screen_width - 2, point( 1 + offset, 1 ) );
+        w = catacurses::newwin( content_height, min_screen_width - 2, point( 1 + offset,
+                                header_height + 1 ) );
 
         ui.position_from_window( w_border );
     };
@@ -317,14 +315,11 @@ void user_interface::show()
     ui.on_redraw( [&]( const ui_adaptor & ) {
         // Redraw the border
         draw_border( w_border, BORDER_COLOR, title );
-        // |-
-        mvwputch( w_border, point( 0, 3 ), c_light_gray, LINE_XXXO );
-        // -|
-        mvwputch( w_border, point( 79, 3 ), c_light_gray, LINE_XOXX );
-        // _|_
-        mvwputch( w_border, point( 5, FULL_SCREEN_HEIGHT - 1 ), c_light_gray, LINE_XXOX );
-        mvwputch( w_border, point( 51, FULL_SCREEN_HEIGHT - 1 ), c_light_gray, LINE_XXOX );
-        mvwputch( w_border, point( 61, FULL_SCREEN_HEIGHT - 1 ), c_light_gray, LINE_XXOX );
+
+        mvwputch( w_border, point( 0, 4 ), c_light_gray, LINE_XXXO ); // |-
+        mvwputch( w_border, point( getmaxx( w_border ) - 1, 4 ), c_light_gray, LINE_XOXX ); // -|
+        mvwputch( w_border, point( 05, TERMY - 1 ), c_light_gray, LINE_XXOX ); // _|_
+        mvwputch( w_border, point( 51, TERMY - 1 ), c_light_gray, LINE_XXOX ); // _|_
         wnoutrefresh( w_border );
 
         // Redraw the header
@@ -345,57 +340,59 @@ void user_interface::show()
                                 _( "<Enter>-Edit" ) ) + 2;
         shortcut_print( w_header, point( tmpx, 1 ), c_white, c_light_green, _( "<Tab>-Switch Page" ) );
 
-        for( int i = 0; i < 78; i++ ) {
-            if( i == 4 || i == 50 || i == 60 ) {
-                mvwputch( w_header, point( i, 2 ), c_light_gray, LINE_OXXX );
-                mvwputch( w_header, point( i, 3 ), c_light_gray, LINE_XOXO );
+        for( int i = 0; i < getmaxx( w_header ); i++ ) {
+            if( i == 4 || i == 50 ) {
+                mvwputch( w_header, point( i, 3 ), c_light_gray, LINE_OXXX ); // ^|^
+                mvwputch( w_header, point( i, 4 ), c_light_gray, LINE_XOXO ); // |
             } else {
                 // Draw line under header
-                mvwputch( w_header, point( i, 2 ), c_light_gray, LINE_OXOX );
+                mvwputch( w_header, point( i, 3 ), c_light_gray, LINE_OXOX ); // -
             }
         }
-        mvwprintz( w_header, point( 1, 3 ), c_white, "#" );
-        mvwprintz( w_header, point( 8, 3 ), c_white, _( "Rules" ) );
-        mvwprintz( w_header, point( 52, 3 ), c_white, _( "Inc/Exc" ) );
+        mvwprintz( w_header, point( 1, 4 ), c_white, "#" );
+        mvwprintz( w_header, point( 8, 4 ), c_white, _( "Rules" ) );
+        mvwprintz( w_header, point( 52, 4 ), c_white, _( "Include/Exclude" ) );
 
         rule_list &cur_rules = tabs[iTab].new_rules;
-        int locx = 17;
+        int locx = getmaxx( w_header ) / 2 - 15;
         for( size_t i = 0; i < tabs.size(); i++ ) {
             const nc_color color = iTab == i ? hilite( c_white ) : c_white;
-            locx += shortcut_print( w_header, point( locx, 2 ), c_white, color, tabs[i].title ) + 1;
+            locx += shortcut_print( w_header, point( locx, 3 ), c_white, color, tabs[i].title ) + 1;
         }
 
-        locx = 55;
-        mvwprintz( w_header, point( locx, 0 ), c_white, _( "Auto pickup enabled:" ) );
-        locx += shortcut_print( w_header, point( locx, 1 ),
+        locx = 0;
+        const std::string autopickup_enabled_text = _( "Auto pickup enabled:" );
+        mvwprintz( w_header, point( locx, 2 ), c_white, autopickup_enabled_text );
+        locx += utf8_width( autopickup_enabled_text );
+        locx += shortcut_print( w_header, point( locx + 1, 2 ),
                                 get_option<bool>( "AUTO_PICKUP" ) ? c_light_green : c_light_red, c_white,
                                 get_option<bool>( "AUTO_PICKUP" ) ? _( "True" ) : _( "False" ) );
-        locx += shortcut_print( w_header, point( locx, 1 ), c_white, c_light_green, "  " );
-        locx += shortcut_print( w_header, point( locx, 1 ), c_white, c_light_green, _( "<S>witch" ) );
-        shortcut_print( w_header, point( locx, 1 ), c_white, c_light_green, "  " );
+        locx += shortcut_print( w_header, point( locx + 1, 2 ), c_white, c_light_green, "  " );
+        locx += shortcut_print( w_header, point( locx, 2 ), c_white, c_light_green, _( "<S>witch" ) );
+        shortcut_print( w_header, point( locx, 2 ), c_white, c_light_green, "  " );
 
         wnoutrefresh( w_header );
 
         // Clear the lines
-        for( int i = 0; i < iContentHeight; i++ ) {
-            for( int j = 0; j < 79; j++ ) {
-                if( j == 4 || j == 50 || j == 60 ) {
-                    mvwputch( w, point( j, i ), c_light_gray, LINE_XOXO );
+        for( int i = 0; i < content_height; i++ ) {
+            for( int j = 0; j < getmaxx( w ); j++ ) {
+                if( j == 4 || j == 50 ) {
+                    mvwputch( w, point( j, i ), c_light_gray, LINE_XOXO ); // |
                 } else {
                     mvwputch( w, point( j, i ), c_black, ' ' );
                 }
             }
         }
 
-        draw_scrollbar( w_border, iLine, iContentHeight, cur_rules.size(), point( 0, 5 ) );
+        draw_scrollbar( w_border, iLine, content_height, cur_rules.size(), point( 0, 6 ) );
         wnoutrefresh( w_border );
 
-        calcStartPos( iStartPos, iLine, iContentHeight, cur_rules.size() );
+        calcStartPos( iStartPos, iLine, content_height, cur_rules.size() );
 
         // display auto pickup
         for( int i = iStartPos; i < static_cast<int>( cur_rules.size() ); i++ ) {
             if( i >= iStartPos &&
-                i < iStartPos + std::min<int>( iContentHeight, cur_rules.size() ) ) {
+                i < iStartPos + std::min<int>( content_height, cur_rules.size() ) ) {
                 nc_color cLineColor = cur_rules[i].bActive ? c_white : c_light_gray;
 
                 mvwprintz( w, point( 1, i - iStartPos ), cLineColor, "%d", i + 1 );
