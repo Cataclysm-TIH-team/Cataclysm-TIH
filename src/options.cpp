@@ -1735,6 +1735,13 @@ void options_manager::add_options_interface()
 
     add_empty_line();
 
+    add( "COLUMN_WIDTH", "interface", to_translation( "Width of columns in player info menu" ),
+         to_translation( "Sets width of columns in player info menu." ),
+         26, 50, 26
+       );
+
+    add_empty_line();
+
     add_option_group( "interface", Group( "additional_messages_in_log",
                                           to_translation( "Additional messages in the log" ),
                                           to_translation( "If true, some additional messages will be shown in the message log." ) ),
