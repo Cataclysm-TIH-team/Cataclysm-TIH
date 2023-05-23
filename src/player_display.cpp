@@ -977,7 +977,7 @@ static void draw_speed_tab( const catacurses::window &w_speed,
             pen = ( units::to_fahrenheit( player_local_temp ) - 65 + climate_control ) *
                   temperature_speed_modifier;
             mvwprintz( w_speed, point( 1, line ), pen_color, pgettext( "speed modifier", "Cold-Blooded" ) );
-            //~ %s: sign of bonus/penalty, %2d: speed bonus/penalty
+            //~ %s: sign of bonus/penalty, %d: speed bonus/penalty
             right_print( w_speed, line, 1, pen_color, string_format( "%s%d%%", pen_sign, std::abs( pen ) ) );
             ++line;
         }
