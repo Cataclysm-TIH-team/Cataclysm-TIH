@@ -430,8 +430,8 @@ static void draw_stats_tab( ui_adaptor &ui, const catacurses::window &w_stats, c
 
         set_highlight_cursor( line_to_draw );
         mvwprintz( w_stats, point( 1, line_to_draw + 1 ), line_color( line_to_draw ), name );
-        mvwprintz( w_stats, point( 18, line_to_draw + 1 ), cstatus, "%2d", cur );
-        mvwprintz( w_stats, point( 21, line_to_draw + 1 ), c_light_gray, "(%2d)", max );
+        right_print( w_stats, line_to_draw + 1, 1, cstatus,
+                     string_format( "%2d <color_light_gray>(%2d)</color>", cur, max ) );
     };
 
     display_stat( _( "Strength:" ), you.get_str(), you.get_str_base(), 0 );
@@ -449,20 +449,16 @@ static void draw_stats_tab( ui_adaptor &ui, const catacurses::window &w_stats, c
 
     set_highlight_cursor( 6 );
     mvwprintz( w_stats, point( 1, 7 ), line_color( 6 ), _( "Height:" ) );
-    mvwprintz( w_stats, point( 25 - utf8_width( you.height_string() ), 7 ), c_light_gray,
-               you.height_string() );
+    right_print( w_stats, 7, 1, c_light_gray, you.height_string() );
 
     set_highlight_cursor( 7 );
     mvwprintz( w_stats, point( 1, 8 ), line_color( 7 ), _( "Age:" ) );
-    mvwprintz( w_stats, point( 25 - utf8_width( you.age_string() ), 8 ), c_light_gray,
-               you.age_string() );
+    right_print( w_stats, 8, 1, c_light_gray, you.age_string() );
 
     set_highlight_cursor( 8 );
     mvwprintz( w_stats, point( 1, 9 ), line_color( 8 ), _( "Blood type:" ) );
-    mvwprintz( w_stats, point( 25 - utf8_width( io::enum_to_string( you.my_blood_type ) +
-                               ( you.blood_rh_factor ? "+" : "-" ) ), 9 ),
-               c_light_gray,
-               io::enum_to_string( you.my_blood_type ) + ( you.blood_rh_factor ? "+" : "-" ) );
+    right_print( w_stats, 9, 1, c_light_gray,
+                 io::enum_to_string( you.my_blood_type ) + ( you.blood_rh_factor ? "+" : "-" ) );
 
     wnoutrefresh( w_stats );
 }
@@ -872,14 +868,11 @@ static void draw_skills_tab( ui_adaptor &ui, const catacurses::window &w_skills,
             }
             mvwprintz( w_skills, point( 1, y_pos ), cstatus, "%s:", aSkill->name() );
             if( aSkill->ident() == skill_dodge ) {
-                mvwprintz( w_skills, point( 14, y_pos ), cstatus, "%4.1f/%-2d(%2d%%)",
-                           you.get_dodge(),
-                           level_num,
-                           ( exercise < 0 ? 0 : exercise ) );
+                right_print( w_skills, y_pos, 1, cstatus, string_format( "%4.1f/%-2d(%2d%%)",
+                             you.get_dodge(), level_num, ( exercise < 0 ? 0 : exercise ) ) );
             } else {
-                mvwprintz( w_skills, point( 19, y_pos ), cstatus, "%-2d(%2d%%)",
-                           level_num,
-                           ( exercise < 0 ? 0 : exercise ) );
+                right_print( w_skills, y_pos, 1, cstatus, string_format( "%-2d(%2d%%)",
+                             level_num, ( exercise < 0 ? 0 : exercise ) ) );
             }
         }
     }
@@ -933,20 +926,20 @@ static void draw_speed_tab( const catacurses::window &w_speed,
     unsigned int line = 3;
     if( you.weight_carried() > you.weight_capacity() ) {
         pen = 25 * ( you.weight_carried() - you.weight_capacity() ) / you.weight_capacity();
-        mvwprintz( w_speed, point( 1, line ), c_red,
-                   pgettext( "speed penalty", "Overburdened        -%2d%%" ), pen );
+        mvwprintz( w_speed, point( 1, line ), c_red, pgettext( "speed penalty", "Overburdened" ), pen );
+        right_print( w_speed, line, 1, c_red, string_format( "-%d%%", pen ) );
         ++line;
     }
     pen = you.get_pain_penalty().speed;
     if( pen >= 1 ) {
-        mvwprintz( w_speed, point( 1, line ), c_red,
-                   pgettext( "speed penalty", "Pain                -%2d%%" ), pen );
+        mvwprintz( w_speed, point( 1, line ), c_red, pgettext( "speed penalty", "Pain" ), pen );
+        right_print( w_speed, line, 1, c_red, string_format( "-%d%%", pen ) );
         ++line;
     }
     if( you.get_thirst() > 40 ) {
         pen = std::abs( Character::thirst_speed_penalty( you.get_thirst() ) );
-        mvwprintz( w_speed, point( 1, line ), c_red,
-                   pgettext( "speed penalty", "Thirst              -%2d%%" ), pen );
+        mvwprintz( w_speed, point( 1, line ), c_red, pgettext( "speed penalty", "Thirst" ), pen );
+        right_print( w_speed, line, 1, c_red, string_format( "-%d%%", pen ) );
         ++line;
     }
     if( you.kcal_speed_penalty() < 0 ) {
@@ -954,14 +947,14 @@ static void draw_speed_tab( const catacurses::window &w_speed,
         const std::string inanition = you.get_bmi_fat() < character_weight_category::underweight ?
                                       _( "Starving" ) : _( "Underfed" );
         //~ %s: Starving/Underfed (already left-justified), %2d: speed penalty
-        mvwprintz( w_speed, point( 1, line ), c_red, pgettext( "speed penalty", "%s-%2d%%" ),
-                   left_justify( inanition, 20 ), pen );
+        mvwprintz( w_speed, point( 1, line ), c_red, pgettext( "speed penalty", "%s" ), inanition );
+        right_print( w_speed, line, 1, c_red, string_format( "-%d%%", pen ) );
         ++line;
     }
     if( you.has_trait( trait_SUNLIGHT_DEPENDENT ) && !g->is_in_sunlight( you.pos() ) ) {
         pen = ( g->light_level( you.posz() ) >= 12 ? 5 : 10 );
-        mvwprintz( w_speed, point( 1, line ), c_red,
-                   pgettext( "speed penalty", "Out of Sunlight     -%2d%%" ), pen );
+        mvwprintz( w_speed, point( 1, line ), c_red, pgettext( "speed penalty", "Out of Sunlight" ), pen );
+        right_print( w_speed, line, 1, c_red, string_format( "-%d%%", pen ) );
         ++line;
     }
 
@@ -983,9 +976,9 @@ static void draw_speed_tab( const catacurses::window &w_speed,
         if( !pen_sign.empty() ) {
             pen = ( units::to_fahrenheit( player_local_temp ) - 65 + climate_control ) *
                   temperature_speed_modifier;
-            mvwprintz( w_speed, point( 1, line ), pen_color,
-                       //~ %s: sign of bonus/penalty, %2d: speed bonus/penalty
-                       pgettext( "speed modifier", "Cold-Blooded        %s%2d%%" ), pen_sign, std::abs( pen ) );
+            mvwprintz( w_speed, point( 1, line ), pen_color, pgettext( "speed modifier", "Cold-Blooded" ) );
+            //~ %s: sign of bonus/penalty, %2d: speed bonus/penalty
+            right_print( w_speed, line, 1, pen_color, string_format( "%s%d%%", pen_sign, std::abs( pen ) ) );
             ++line;
         }
     }
@@ -993,27 +986,24 @@ static void draw_speed_tab( const catacurses::window &w_speed,
     const int speed_modifier = you.get_enchantment_speed_bonus();
 
     if( speed_modifier != 0 ) {
-        mvwprintz( w_speed, point( 1, line ), c_green,
-                   pgettext( "speed bonus", "Bio/Mut/Effects     +%2d" ), speed_modifier );
+        mvwprintz( w_speed, point( 1, line ), c_green, pgettext( "speed bonus", "Bio/Mut/Effects" ) );
+        right_print( w_speed, line, 1, c_green, string_format( "+%d", std::abs( speed_modifier ) ) );
         ++line;
     }
 
     for( const std::pair<const std::string, int> &speed_effect : speed_effects ) {
         nc_color col = speed_effect.second > 0 ? c_green : c_red;
         mvwprintz( w_speed, point( 1, line ), col, "%s", speed_effect.first );
-        mvwprintz( w_speed, point( 21, line ), col, ( speed_effect.second > 0 ? "+" : "-" ) );
-        mvwprintz( w_speed, point( std::abs( speed_effect.second ) >= 10 ? 22 : 23, line ), col, "%d%%",
-                   std::abs( speed_effect.second ) );
+        right_print( w_speed, line, 1, col, speed_effect.second > 0 ? "+" : "-" +
+                     string_format( "%d%%", std::abs( speed_effect.second ) ) );
         ++line;
     }
 
     int runcost = you.run_cost( 100 );
     nc_color col = runcost <= 100 ? c_green : c_red;
-    mvwprintz( w_speed, point( 21 + ( runcost >= 100 ? 0 : ( runcost < 10 ? 2 : 1 ) ), 1 ), col,
-               "%d", runcost );
+    right_print( w_speed, 1, 1, col, string_format( "%d", runcost ) );
     col = ( newmoves >= 100 ? c_green : c_red );
-    mvwprintz( w_speed, point( 21 + ( newmoves >= 100 ? 0 : ( newmoves < 10 ? 2 : 1 ) ), 2 ), col,
-               "%d", newmoves );
+    right_print( w_speed, 2, 1, col, string_format( "%d", newmoves ) );
     wnoutrefresh( w_speed );
 }
 
