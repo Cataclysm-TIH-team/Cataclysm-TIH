@@ -301,7 +301,7 @@ android {
     }
 
     signingConfigs {
-        if (keystoreProperties.getProperty('storeFile') != null) {
+        
             if (file(keystoreProperties.getProperty('storeFile')).exists()) {
                 release {
                     storeFile file(keystoreProperties.getProperty("storeFile"))
@@ -312,7 +312,7 @@ android {
             } else {
                 throw new GradleException("Keystore file " + keystoreProperties.getProperty("storeFile") + " was not found.\n")
             }
-        }
+        
         if (keystoreProperties.getProperty('debug_storeFile') != null) {
             if (file(keystoreProperties.getProperty('debug_storeFile')).exists()) {
                 debug {
