@@ -249,7 +249,7 @@ android {
         versionName new File("$version_header_path").text.split('\"')[1]
         if (buildAsApplication) {
             applicationId "com.nightpryanik.cataclysmtish"
-            setProperty("archivesBaseName", "cataclysm-" + versionName)
+            setProperty("archivesBaseName", "cataclysmtish-" + versionName)
         }
         resValue "string", "app_name", "Cataclysm TISH"
 
