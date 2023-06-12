@@ -1426,90 +1426,102 @@ void options_manager::add_options_general()
 
     add_empty_line();
 
-    add( "AUTO_PICKUP", "general", to_translation( "Auto pickup enabled" ),
-         to_translation( "If true, enable item auto pickup.  Change pickup rules with the Auto pickup manager." ),
-         false
-       );
+    add_option_group( "general", Group( "auto_pickup",
+                                        to_translation( "Auto pickup settings" ),
+                                        to_translation( "Settings related to auto pickup of items." ) ),
+    [&]( const std::string & page_id ) {
 
-    add( "AUTO_PICKUP_ADJACENT", "general", to_translation( "Auto pickup adjacent" ),
-         to_translation( "If true, enable auto pickup items one tile around to the player.  You can assign No Auto Pickup zones with the Zones manager for e.g. your homebase." ),
-         false
-       );
+        add( "AUTO_PICKUP", page_id, to_translation( "Auto pickup enabled" ),
+             to_translation( "If true, enable item auto pickup.  Change pickup rules with the Auto pickup manager." ),
+             false
+           );
 
-    get_option( "AUTO_PICKUP_ADJACENT" ).setPrerequisite( "AUTO_PICKUP" );
+        add( "AUTO_PICKUP_ADJACENT", page_id, to_translation( "Auto pickup adjacent" ),
+             to_translation( "If true, enable auto pickup items one tile around to the player.  You can assign No Auto Pickup zones with the Zones manager for e.g. your homebase." ),
+             false
+           );
 
-    add( "AUTO_PICKUP_OWNED", "general", to_translation( "Auto pickup owned items" ),
-         to_translation( "If true, items that belong to your faction will be included in auto pickup." ),
-         false
-       );
+        get_option( "AUTO_PICKUP_ADJACENT" ).setPrerequisite( "AUTO_PICKUP" );
 
-    get_option( "AUTO_PICKUP_OWNED" ).setPrerequisite( "AUTO_PICKUP" );
+        add( "AUTO_PICKUP_OWNED", page_id, to_translation( "Auto pickup owned items" ),
+             to_translation( "If true, items that belong to your faction will be included in auto pickup." ),
+             false
+           );
 
-    add( "AUTO_PICKUP_WEIGHT_LIMIT", "general", to_translation( "Auto pickup weight limit" ),
-         to_translation( "Auto pickup items with weight less than or equal to [option] * 50 grams.  You must also set the small items option.  0 = disabled." ),
-         0, 100, 0
-       );
+        get_option( "AUTO_PICKUP_OWNED" ).setPrerequisite( "AUTO_PICKUP" );
 
-    get_option( "AUTO_PICKUP_WEIGHT_LIMIT" ).setPrerequisite( "AUTO_PICKUP" );
+        add( "AUTO_PICKUP_WEIGHT_LIMIT", page_id, to_translation( "Auto pickup weight limit" ),
+             to_translation( "Auto pickup items with weight less than or equal to [option] * 50 grams.  You must also set the small items option.  0 = disabled." ),
+             0, 100, 0
+           );
 
-    add( "AUTO_PICKUP_VOLUME_LIMIT", "general", to_translation( "Auto pickup volume limit" ),
-         to_translation( "Auto pickup items with volume less than or equal to [option] * 50 milliliters.  You must also set the light items option.  0 = disabled." ),
-         0, 100, 0
-       );
+        get_option( "AUTO_PICKUP_WEIGHT_LIMIT" ).setPrerequisite( "AUTO_PICKUP" );
 
-    get_option( "AUTO_PICKUP_VOLUME_LIMIT" ).setPrerequisite( "AUTO_PICKUP" );
+        add( "AUTO_PICKUP_VOLUME_LIMIT", page_id, to_translation( "Auto pickup volume limit" ),
+             to_translation( "Auto pickup items with volume less than or equal to [option] * 50 milliliters.  You must also set the light items option.  0 = disabled." ),
+             0, 100, 0
+           );
 
-    add( "AUTO_PICKUP_SAFEMODE", "general", to_translation( "Auto pickup safe mode" ),
-         to_translation( "If true, auto pickup is disabled as long as you can see monsters nearby.  This is affected by 'Safe mode proximity distance'." ),
-         false
-       );
+        get_option( "AUTO_PICKUP_VOLUME_LIMIT" ).setPrerequisite( "AUTO_PICKUP" );
 
-    get_option( "AUTO_PICKUP_SAFEMODE" ).setPrerequisite( "AUTO_PICKUP" );
+        add( "AUTO_PICKUP_SAFEMODE", page_id, to_translation( "Auto pickup safe mode" ),
+             to_translation( "If true, auto pickup is disabled as long as you can see monsters nearby.  This is affected by 'Safe mode proximity distance'." ),
+             false
+           );
 
-    add( "NO_AUTO_PICKUP_ZONES_LIST_ITEMS", "general",
-         to_translation( "List items within no auto pickup zones" ),
-         to_translation( "If true, you will see messages about items you step on, within no auto pickup zones." ),
-         true
-       );
+        get_option( "AUTO_PICKUP_SAFEMODE" ).setPrerequisite( "AUTO_PICKUP" );
 
-    get_option( "NO_AUTO_PICKUP_ZONES_LIST_ITEMS" ).setPrerequisite( "AUTO_PICKUP" );
+        add( "NO_AUTO_PICKUP_ZONES_LIST_ITEMS", page_id,
+             to_translation( "List items within no auto pickup zones" ),
+             to_translation( "If true, you will see messages about items you step on, within no auto pickup zones." ),
+             true
+           );
 
-    add_empty_line();
+        get_option( "NO_AUTO_PICKUP_ZONES_LIST_ITEMS" ).setPrerequisite( "AUTO_PICKUP" );
 
-    add( "AUTO_FEATURES", "general", to_translation( "Additional auto features" ),
-         to_translation( "If true, enables configured auto features below.  Disabled as long as any enemy monster is seen." ),
-         false
-       );
+    } );
 
-    add( "AUTO_PULP_BUTCHER", "general", to_translation( "Auto pulp or butcher" ),
-         to_translation( "Action to perform when 'Auto pulp or butcher' is enabled.  Pulp: Pulp corpses you stand on.  - Pulp Adjacent: Also pulp corpses adjacent from you.  - Butcher: Butcher corpses you stand on." ),
-    { { "off", to_translation( "options", "Disabled" ) }, { "pulp", to_translation( "Pulp" ) }, { "pulp_zombie_only", to_translation( "Pulp Zombies Only" ) }, { "pulp_adjacent", to_translation( "Pulp Adjacent" ) }, { "pulp_adjacent_zombie_only", to_translation( "Pulp Adjacent Zombie Only" ) }, { "butcher", to_translation( "Butcher" ) } },
-    "off"
-       );
+    add_option_group( "general", Group( "auto_features",
+                                        to_translation( "Auto features settings" ),
+                                        to_translation( "Settings related to various additional auto features." ) ),
+    [&]( const std::string & page_id ) {
 
-    get_option( "AUTO_PULP_BUTCHER" ).setPrerequisite( "AUTO_FEATURES" );
+        add( "AUTO_FEATURES", page_id, to_translation( "Additional auto features" ),
+             to_translation( "If true, enables configured auto features below.  Disabled as long as any enemy monster is seen." ),
+             false
+           );
 
-    add( "AUTO_MINING", "general", to_translation( "Auto mining" ),
-         to_translation( "If true, enables automatic use of wielded pickaxes and jackhammers whenever trying to move into mineable terrain." ),
-         false
-       );
+        add( "AUTO_PULP_BUTCHER", page_id, to_translation( "Auto pulp or butcher" ),
+             to_translation( "Action to perform when 'Auto pulp or butcher' is enabled.  Pulp: Pulp corpses you stand on.  - Pulp Adjacent: Also pulp corpses adjacent from you.  - Butcher: Butcher corpses you stand on." ),
+        { { "off", to_translation( "options", "Disabled" ) }, { "pulp", to_translation( "Pulp" ) }, { "pulp_zombie_only", to_translation( "Pulp Zombies Only" ) }, { "pulp_adjacent", to_translation( "Pulp Adjacent" ) }, { "pulp_adjacent_zombie_only", to_translation( "Pulp Adjacent Zombie Only" ) }, { "butcher", to_translation( "Butcher" ) } },
+        "off"
+           );
 
-    get_option( "AUTO_MINING" ).setPrerequisite( "AUTO_FEATURES" );
+        get_option( "AUTO_PULP_BUTCHER" ).setPrerequisite( "AUTO_FEATURES" );
 
-    add( "AUTO_MOPPING", "general", to_translation( "Auto mopping" ),
-         to_translation( "If true, enables automatic use of wielded mops to clean surrounding terrain." ),
-         false
-       );
+        add( "AUTO_MINING", page_id, to_translation( "Auto mining" ),
+             to_translation( "If true, enables automatic use of wielded pickaxes and jackhammers whenever trying to move into mineable terrain." ),
+             false
+           );
 
-    get_option( "AUTO_MOPPING" ).setPrerequisite( "AUTO_FEATURES" );
+        get_option( "AUTO_MINING" ).setPrerequisite( "AUTO_FEATURES" );
 
-    add( "AUTO_FORAGING", "general", to_translation( "Auto foraging" ),
-         to_translation( "Action to perform when 'Auto foraging' is enabled.  Bushes: Only forage bushes.  - Trees: Only forage trees.  - Crops: Only forage crops.  - Everything: Forage bushes, trees, crops, and everything else including flowers, cattails etc." ),
-    { { "off", to_translation( "options", "Disabled" ) }, { "bushes", to_translation( "Bushes" ) }, { "trees", to_translation( "Trees" ) }, { "crops", to_translation( "Crops" ) }, { "all", to_translation( "Everything" ) } },
-    "off"
-       );
+        add( "AUTO_MOPPING", page_id, to_translation( "Auto mopping" ),
+             to_translation( "If true, enables automatic use of wielded mops to clean surrounding terrain." ),
+             false
+           );
 
-    get_option( "AUTO_FORAGING" ).setPrerequisite( "AUTO_FEATURES" );
+        get_option( "AUTO_MOPPING" ).setPrerequisite( "AUTO_FEATURES" );
+
+        add( "AUTO_FORAGING", page_id, to_translation( "Auto foraging" ),
+             to_translation( "Action to perform when 'Auto foraging' is enabled.  Bushes: Only forage bushes.  - Trees: Only forage trees.  - Crops: Only forage crops.  - Everything: Forage bushes, trees, crops, and everything else including flowers, cattails etc." ),
+        { { "off", to_translation( "options", "Disabled" ) }, { "bushes", to_translation( "Bushes" ) }, { "trees", to_translation( "Trees" ) }, { "crops", to_translation( "Crops" ) }, { "all", to_translation( "Everything" ) } },
+        "off"
+           );
+
+        get_option( "AUTO_FORAGING" ).setPrerequisite( "AUTO_FEATURES" );
+
+    } );
 
     add_empty_line();
 
@@ -1537,35 +1549,42 @@ void options_manager::add_options_general()
 
     add_empty_line();
 
-    add( "SAFEMODE", "general", to_translation( "Safe mode" ),
-         to_translation( "If true, will hold the game and display a warning if a hostile monster/NPC is approaching." ),
-         true
-       );
+    add_option_group( "general", Group( "safe_mode",
+                                        to_translation( "Safe mode settings" ),
+                                        to_translation( "Settings related to safe mode." ) ),
+    [&]( const std::string & page_id ) {
 
-    add( "SAFEMODEPROXIMITY", "general", to_translation( "Safe mode proximity distance" ),
-         to_translation( "If safe mode is enabled, distance to hostiles at which safe mode should show a warning.  0 = Max player view distance.  This option only has effect when no safe mode rule is specified.  Otherwise, edit the default rule in Safe mode manager instead of this value." ),
-         0, MAX_VIEW_DISTANCE, 0
-       );
+        add( "SAFEMODE", page_id, to_translation( "Safe mode" ),
+             to_translation( "If true, will hold the game and display a warning if a hostile monster/NPC is approaching." ),
+             true
+           );
 
-    add( "SAFEMODEVEH", "general", to_translation( "Safe mode when driving" ),
-         to_translation( "If true, safe mode will alert you of hostiles while you are driving a vehicle." ),
-         false
-       );
+        add( "SAFEMODEPROXIMITY", page_id, to_translation( "Safe mode proximity distance" ),
+             to_translation( "If safe mode is enabled, distance to hostiles at which safe mode should show a warning.  0 = Max player view distance.  This option only has effect when no safe mode rule is specified.  Otherwise, edit the default rule in Safe mode manager instead of this value." ),
+             0, MAX_VIEW_DISTANCE, 0
+           );
 
-    add( "AUTOSAFEMODE", "general", to_translation( "Auto reactivate safe mode" ),
-         to_translation( "If true, safe mode will automatically reactivate after a certain number of turns.  See option 'Turns to auto reactivate safe mode.'" ),
-         false
-       );
+        add( "SAFEMODEVEH", page_id, to_translation( "Safe mode when driving" ),
+             to_translation( "If true, safe mode will alert you of hostiles while you are driving a vehicle." ),
+             false
+           );
 
-    add( "AUTOSAFEMODETURNS", "general", to_translation( "Turns to auto reactivate safe mode" ),
-         to_translation( "Number of turns after which safe mode is reactivated.  Will only reactivate if no hostiles are in 'Safe mode proximity distance.'" ),
-         1, 600, 50
-       );
+        add( "AUTOSAFEMODE", page_id, to_translation( "Auto reactivate safe mode" ),
+             to_translation( "If true, safe mode will automatically reactivate after a certain number of turns.  See option 'Turns to auto reactivate safe mode.'" ),
+             false
+           );
 
-    add( "SAFEMODEIGNORETURNS", "general", to_translation( "Turns to remember ignored monsters" ),
-         to_translation( "Number of turns an ignored monster stays ignored after it is no longer seen.  0 disables this option and monsters are permanently ignored." ),
-         0, 3600, 200
-       );
+        add( "AUTOSAFEMODETURNS", page_id, to_translation( "Turns to auto reactivate safe mode" ),
+             to_translation( "Number of turns after which safe mode is reactivated.  Will only reactivate if no hostiles are in 'Safe mode proximity distance.'" ),
+             1, 600, 50
+           );
+
+        add( "SAFEMODEIGNORETURNS", page_id, to_translation( "Turns to remember ignored monsters" ),
+             to_translation( "Number of turns an ignored monster stays ignored after it is no longer seen.  0 disables this option and monsters are permanently ignored." ),
+             0, 3600, 200
+           );
+
+    } );
 
     add_empty_line();
 
@@ -1576,52 +1595,64 @@ void options_manager::add_options_general()
 
     add_empty_line();
 
-    add( "AUTOSAVE", "general", to_translation( "Autosave" ),
-         to_translation( "If true, game will periodically save the map.  Autosaves occur based on in-game turns or realtime minutes, whichever is larger." ),
-         true
-       );
+    add_option_group( "general", Group( "auto_save",
+                                        to_translation( "Auto save settings" ),
+                                        to_translation( "Settings related to auto saving the game." ) ),
+    [&]( const std::string & page_id ) {
 
-    add( "AUTOSAVE_TURNS", "general", to_translation( "Game turns between autosaves" ),
-         to_translation( "Number of game turns between autosaves." ),
-         10, 1000, 50
-       );
+        add( "AUTOSAVE", page_id, to_translation( "Autosave" ),
+             to_translation( "If true, game will periodically save the map.  Autosaves occur based on in-game turns or realtime minutes, whichever is larger." ),
+             true
+           );
 
-    get_option( "AUTOSAVE_TURNS" ).setPrerequisite( "AUTOSAVE" );
+        add( "AUTOSAVE_TURNS", page_id, to_translation( "Game turns between autosaves" ),
+             to_translation( "Number of game turns between autosaves." ),
+             10, 1000, 50
+           );
 
-    add( "AUTOSAVE_MINUTES", "general", to_translation( "Real minutes between autosaves" ),
-         to_translation( "Number of realtime minutes between autosaves." ),
-         0, 127, 5
-       );
+        get_option( "AUTOSAVE_TURNS" ).setPrerequisite( "AUTOSAVE" );
 
-    get_option( "AUTOSAVE_MINUTES" ).setPrerequisite( "AUTOSAVE" );
+        add( "AUTOSAVE_MINUTES", page_id, to_translation( "Real minutes between autosaves" ),
+             to_translation( "Number of realtime minutes between autosaves." ),
+             0, 127, 5
+           );
 
-    add_empty_line();
+        get_option( "AUTOSAVE_MINUTES" ).setPrerequisite( "AUTOSAVE" );
 
-    add( "AUTO_NOTES", "general", to_translation( "Auto notes" ),
-         to_translation( "If true, automatically sets notes." ),
-         false
-       );
+    } );
 
-    add( "AUTO_NOTES_STAIRS", "general", to_translation( "Auto notes (stairs)" ),
-         to_translation( "If true, automatically sets notes on places that have stairs that go up or down." ),
-         false
-       );
+    add_option_group( "general", Group( "auto_notes",
+                                        to_translation( "Auto notes settings" ),
+                                        to_translation( "Settings related to auto notes." ) ),
+    [&]( const std::string & page_id ) {
 
-    get_option( "AUTO_NOTES_STAIRS" ).setPrerequisite( "AUTO_NOTES" );
+        add( "AUTO_NOTES", page_id, to_translation( "Auto notes" ),
+             to_translation( "If true, automatically sets notes." ),
+             false
+           );
 
-    add( "AUTO_NOTES_MAP_EXTRAS", "general", to_translation( "Auto notes (map extras)" ),
-         to_translation( "If true, automatically sets notes on places that contain various map extras." ),
-         false
-       );
+        add( "AUTO_NOTES_STAIRS", page_id, to_translation( "Auto notes (stairs)" ),
+             to_translation( "If true, automatically sets notes on places that have stairs that go up or down." ),
+             false
+           );
 
-    get_option( "AUTO_NOTES_MAP_EXTRAS" ).setPrerequisite( "AUTO_NOTES" );
+        get_option( "AUTO_NOTES_STAIRS" ).setPrerequisite( "AUTO_NOTES" );
 
-    add( "AUTO_NOTES_DROPPED_FAVORITES", "general", to_translation( "Auto notes (dropped favorites)" ),
-         to_translation( "If true, automatically sets notes when player drops favorited items." ),
-         false
-       );
+        add( "AUTO_NOTES_MAP_EXTRAS", page_id, to_translation( "Auto notes (map extras)" ),
+             to_translation( "If true, automatically sets notes on places that contain various map extras." ),
+             false
+           );
 
-    get_option( "AUTO_NOTES_DROPPED_FAVORITES" ).setPrerequisite( "AUTO_NOTES" );
+        get_option( "AUTO_NOTES_MAP_EXTRAS" ).setPrerequisite( "AUTO_NOTES" );
+
+        add( "AUTO_NOTES_DROPPED_FAVORITES", page_id, to_translation( "Auto notes (dropped favorites)" ),
+             to_translation( "If true, automatically sets notes when player drops favorited items." ),
+             false
+           );
+
+        get_option( "AUTO_NOTES_DROPPED_FAVORITES" ).setPrerequisite( "AUTO_NOTES" );
+
+    } );
 
     add_empty_line();
 
@@ -1649,38 +1680,46 @@ void options_manager::add_options_general()
 
     add_empty_line();
 
-    add( "SOUND_ENABLED", "general", to_translation( "Sound enabled" ),
-         to_translation( "If true, music and sound are enabled." ),
-         true, COPT_NO_SOUND_HIDE
-       );
+    add_option_group( "general", Group( "sound",
+                                        to_translation( "Audio settings" ),
+                                        to_translation( "Settings related to sound and music." ) ),
+    [&]( const std::string & page_id ) {
 
-    add( "SOUNDPACKS", "general", to_translation( "Choose soundpack" ),
-         to_translation( "Choose the soundpack you want to use.  Requires restart." ),
-         build_soundpacks_list(), "basic", COPT_NO_SOUND_HIDE
-       ); // populate the options dynamically
+        add( "SOUND_ENABLED", page_id, to_translation( "Sound enabled" ),
+             to_translation( "If true, music and sound are enabled." ),
+             true, COPT_NO_SOUND_HIDE
+           );
 
-    get_option( "SOUNDPACKS" ).setPrerequisite( "SOUND_ENABLED" );
+        add( "SOUNDPACKS", page_id, to_translation( "Choose soundpack" ),
+             to_translation( "Choose the soundpack you want to use.  Requires restart." ),
+             build_soundpacks_list(), "basic", COPT_NO_SOUND_HIDE
+           ); // populate the options dynamically
 
-    add( "MUSIC_VOLUME", "general", to_translation( "Music volume" ),
-         to_translation( "Adjust the volume of the music being played in the background." ),
-         0, 128, 100, COPT_NO_SOUND_HIDE
-       );
+        get_option( "SOUNDPACKS" ).setPrerequisite( "SOUND_ENABLED" );
 
-    get_option( "MUSIC_VOLUME" ).setPrerequisite( "SOUND_ENABLED" );
+        add( "MUSIC_VOLUME", page_id, to_translation( "Music volume" ),
+             to_translation( "Adjust the volume of the music being played in the background." ),
+             0, 128, 100, COPT_NO_SOUND_HIDE
+           );
 
-    add( "SOUND_EFFECT_VOLUME", "general", to_translation( "Sound effect volume" ),
-         to_translation( "Adjust the volume of sound effects being played by the game." ),
-         0, 128, 100, COPT_NO_SOUND_HIDE
-       );
+        get_option( "MUSIC_VOLUME" ).setPrerequisite( "SOUND_ENABLED" );
 
-    get_option( "SOUND_EFFECT_VOLUME" ).setPrerequisite( "SOUND_ENABLED" );
+        add( "SOUND_EFFECT_VOLUME", page_id, to_translation( "Sound effect volume" ),
+             to_translation( "Adjust the volume of sound effects being played by the game." ),
+             0, 128, 100, COPT_NO_SOUND_HIDE
+           );
 
-    add( "AMBIENT_SOUND_VOLUME", "general", to_translation( "Ambient sound volume" ),
-         to_translation( "Adjust the volume of ambient sounds being played by the game." ),
-         0, 128, 100, COPT_NO_SOUND_HIDE
-       );
+        get_option( "SOUND_EFFECT_VOLUME" ).setPrerequisite( "SOUND_ENABLED" );
 
-    get_option( "AMBIENT_SOUND_VOLUME" ).setPrerequisite( "SOUND_ENABLED" );
+        add( "AMBIENT_SOUND_VOLUME", page_id, to_translation( "Ambient sound volume" ),
+             to_translation( "Adjust the volume of ambient sounds being played by the game." ),
+             0, 128, 100, COPT_NO_SOUND_HIDE
+           );
+
+        get_option( "AMBIENT_SOUND_VOLUME" ).setPrerequisite( "SOUND_ENABLED" );
+
+    } );
+
 }
 
 void options_manager::add_options_interface()
@@ -1694,44 +1733,51 @@ void options_manager::add_options_interface()
 
     add_empty_line();
 
-    add( "USE_CELSIUS", "interface", to_translation( "Temperature units" ),
-         to_translation( "Switch between Fahrenheit, Celsius, and Kelvin." ),
-    { { "fahrenheit", to_translation( "Fahrenheit" ) }, { "celsius", to_translation( "Celsius" ) }, { "kelvin", to_translation( "Kelvin" ) } },
-    "fahrenheit"
-       );
+    add_option_group( "interface", Group( "measurement_units",
+                                          to_translation( "Measurement units" ),
+                                          to_translation( "Settings related to various measurement units." ) ),
+    [&]( const std::string & page_id ) {
 
-    add( "USE_METRIC_SPEEDS", "interface", to_translation( "Speed units" ),
-         to_translation( "Switch between mph, km/h, and tiles/turn." ),
-    { { "mph", to_translation( "mph" ) }, { "km/h", to_translation( "km/h" ) }, { "t/t", to_translation( "tiles/turn" ) } },
-    ( SystemLocale::UseMetricSystem().value_or( false ) ? "km/h" : "mph" )
-       );
+        add( "USE_CELSIUS", page_id, to_translation( "Temperature units" ),
+             to_translation( "Switch between Fahrenheit, Celsius, and Kelvin." ),
+        { { "fahrenheit", to_translation( "Fahrenheit" ) }, { "celsius", to_translation( "Celsius" ) }, { "kelvin", to_translation( "Kelvin" ) } },
+        "fahrenheit"
+           );
 
-    add( "USE_METRIC_WEIGHTS", "interface", to_translation( "Mass units" ),
-         to_translation( "Switch between lbs and kg." ),
-    { { "lbs", to_translation( "lbs" ) }, { "kg", to_translation( "kg" ) } },
-    ( SystemLocale::UseMetricSystem().value_or( false ) ? "kg" : "lbs" )
-       );
+        add( "USE_METRIC_SPEEDS", page_id, to_translation( "Speed units" ),
+             to_translation( "Switch between mph, km/h, and tiles/turn." ),
+        { { "mph", to_translation( "mph" ) }, { "km/h", to_translation( "km/h" ) }, { "t/t", to_translation( "tiles/turn" ) } },
+        ( SystemLocale::UseMetricSystem().value_or( false ) ? "km/h" : "mph" )
+           );
 
-    add( "VOLUME_UNITS", "interface", to_translation( "Volume units" ),
-         to_translation( "Switch between the cups (c), liters (L), and quarts (qt)." ),
-    { { "c", to_translation( "Cup" ) }, { "l", to_translation( "Liter" ) }, { "qt", to_translation( "Quart" ) } },
-    "l"
-       );
-    add( "DISTANCE_UNITS", "interface", to_translation( "Distance units" ),
-         to_translation( "Switch between metric and imperial distance units." ),
-    { { "metric", to_translation( "Metric" ) }, { "imperial", to_translation( "Imperial" ) } },
-    ( SystemLocale::UseMetricSystem().value_or( false ) ? "metric" : "imperial" ) );
+        add( "USE_METRIC_WEIGHTS", page_id, to_translation( "Mass units" ),
+             to_translation( "Switch between lbs and kg." ),
+        { { "lbs", to_translation( "lbs" ) }, { "kg", to_translation( "kg" ) } },
+        ( SystemLocale::UseMetricSystem().value_or( false ) ? "kg" : "lbs" )
+           );
 
-    add( "24_HOUR", "interface", to_translation( "Time format" ),
-         to_translation( "12h: AM/PM, e.g. 7:31 AM - Military: 24h Military, e.g. 0731 - 24h: Normal 24h, e.g. 7:31" ),
-         //~ 12h time, e.g.  11:59pm
-    {   { "12h", to_translation( "12h" ) },
-        //~ Military time, e.g.  2359
-        { "military", to_translation( "Military" ) },
-        //~ 24h time, e.g.  23:59
-        { "24h", to_translation( "24h" ) }
-    },
-    "12h" );
+        add( "VOLUME_UNITS", page_id, to_translation( "Volume units" ),
+             to_translation( "Switch between the cups (c), liters (L), and quarts (qt)." ),
+        { { "c", to_translation( "Cup" ) }, { "l", to_translation( "Liter" ) }, { "qt", to_translation( "Quart" ) } },
+        "l"
+           );
+        add( "DISTANCE_UNITS", page_id, to_translation( "Distance units" ),
+             to_translation( "Switch between metric and imperial distance units." ),
+        { { "metric", to_translation( "Metric" ) }, { "imperial", to_translation( "Imperial" ) } },
+        ( SystemLocale::UseMetricSystem().value_or( false ) ? "metric" : "imperial" ) );
+
+        add( "24_HOUR", page_id, to_translation( "Time format" ),
+             to_translation( "12h: AM/PM, e.g. 7:31 AM - Military: 24h Military, e.g. 0731 - 24h: Normal 24h, e.g. 7:31" ),
+             //~ 12h time, e.g.  11:59pm
+        {   { "12h", to_translation( "12h" ) },
+            //~ Military time, e.g.  2359
+            { "military", to_translation( "Military" ) },
+            //~ 24h time, e.g.  23:59
+            { "24h", to_translation( "24h" ) }
+        },
+        "12h" );
+
+    } );
 
     add_empty_line();
 
@@ -1788,6 +1834,31 @@ void options_manager::add_options_interface()
 
     add_empty_line();
 
+    add_option_group( "interface", Group( "AIM",
+                                          to_translation( "Advanced Inventory Manager settings" ),
+                                          to_translation( "Settings related to behavior of AIM." ) ),
+    [&]( const std::string & page_id ) {
+
+        add( "CLOSE_ADV_INV", page_id, to_translation( "Close advanced inventory on move all" ),
+             to_translation( "If true, will close the advanced inventory when the move all items command is used." ),
+             false
+           );
+
+        add( "OPEN_DEFAULT_ADV_INV", page_id,
+             to_translation( "Open default advanced inventory layout" ),
+             to_translation( "If true, open default advanced inventory layout instead of last opened layout" ),
+             false
+           );
+
+        add( "AIM_WIDTH", page_id, to_translation( "Full screen Advanced Inventory Manager" ),
+             to_translation( "If true, Advanced Inventory Manager menu will fit full screen, otherwise it will leave sidebar visible." ),
+             false
+           );
+
+    } );
+
+    add_empty_line();
+
     add( "SDL_KEYBOARD_MODE", "interface", to_translation( "Use key code input mode" ),
          to_translation( "Use key code or symbol input on SDL.  "
                          "Symbol is recommended for non-qwerty layouts since currently "
@@ -1827,17 +1898,6 @@ void options_manager::add_options_interface()
     add( "QUERY_KEYBIND_REMOVAL", "interface", to_translation( "Query on keybinding removal" ),
          to_translation( "If true, will query before removing a keybinding from a hotkey." ),
          true
-       );
-
-    add( "CLOSE_ADV_INV", "interface", to_translation( "Close advanced inventory on move all" ),
-         to_translation( "If true, will close the advanced inventory when the move all items command is used." ),
-         false
-       );
-
-    add( "OPEN_DEFAULT_ADV_INV", "interface",
-         to_translation( "Open default advanced inventory layout" ),
-         to_translation( "If true, open default advanced inventory layout instead of last opened layout" ),
-         false
        );
 
     add( "INV_USE_ACTION_NAMES", "interface", to_translation( "Display actions in \"Use item\" menu" ),
@@ -1923,66 +1983,92 @@ void options_manager::add_options_interface()
 
     add_empty_line();
 
-    add( "VEHICLE_ARMOR_COLOR", "interface", to_translation( "Vehicle plating changes part color" ),
-         to_translation( "If true, vehicle parts will change color if they are armor plated." ),
-         true
-       );
+    add_option_group( "interface", Group( "vehicles",
+                                          to_translation( "Vehicle settings" ),
+                                          to_translation( "Settings related to vehicles." ) ),
+    [&]( const std::string & page_id ) {
 
-    add( "DRIVING_VIEW_OFFSET", "interface", to_translation( "Auto-shift the view while driving" ),
-         to_translation( "If true, view will automatically shift towards the driving direction." ),
-         true
-       );
+        add( "VEHICLE_ARMOR_COLOR", page_id, to_translation( "Vehicle plating changes part color" ),
+             to_translation( "If true, vehicle parts will change color if they are armor plated." ),
+             true
+           );
 
-    add( "VEHICLE_DIR_INDICATOR", "interface", to_translation( "Draw vehicle facing indicator" ),
-         to_translation( "If true, when controlling a vehicle, a white 'X' (in curses version) or a crosshair (in tiles version) at distance 10 from the center will display its current facing." ),
-         true
-       );
+        add( "DRIVING_VIEW_OFFSET", page_id, to_translation( "Auto-shift the view while driving" ),
+             to_translation( "If true, view will automatically shift towards the driving direction." ),
+             true
+           );
 
-    add( "REVERSE_STEERING", "interface", to_translation( "Reverse steering direction in reverse" ),
-         to_translation( "If true, when driving a vehicle in reverse, steering should also reverse like real life." ),
-         false
-       );
+        add( "VEHICLE_DIR_INDICATOR", page_id, to_translation( "Draw vehicle facing indicator" ),
+             to_translation( "If true, when controlling a vehicle, a white 'X' (in curses version) or a crosshair (in tiles version) at distance 10 from the center will display its current facing." ),
+             true
+           );
+
+        add( "REVERSE_STEERING", page_id, to_translation( "Reverse steering direction in reverse" ),
+             to_translation( "If true, when driving a vehicle in reverse, steering should also reverse like real life." ),
+             false
+           );
+
+    } );
+
+    add_option_group( "interface", Group( "sidebar",
+                                          to_translation( "Sidebar settings" ),
+                                          to_translation( "Settings related to sidebar." ) ),
+    [&]( const std::string & page_id ) {
+
+        add( "SIDEBAR_POSITION", page_id, to_translation( "Sidebar position" ),
+             to_translation( "Switch between sidebar on the left or on the right side.  Requires restart." ),
+             //~ sidebar position
+        { { "left", to_translation( "Left" ) }, { "right", to_translation( "Right" ) } }, "right"
+           );
+
+        add( "SIDEBAR_SPACERS", page_id, to_translation( "Draw sidebar spacers" ),
+             to_translation( "If true, adds an extra space between sidebar panels." ),
+             false
+           );
+
+        add( "LOG_FLOW", page_id, to_translation( "Message log flow" ),
+             to_translation( "Where new log messages should show." ),
+             //~ sidebar/message log flow direction
+        { { "new_top", to_translation( "Top" ) }, { "new_bottom", to_translation( "Bottom" ) } },
+        "new_bottom"
+           );
+
+        add( "MESSAGE_TTL", page_id, to_translation( "Sidebar log message display duration" ),
+             to_translation( "Number of turns after which a message will be removed from the sidebar log.  0 = disabled." ),
+             0, 1000, 0
+           );
+
+        add( "MESSAGE_COOLDOWN", page_id, to_translation( "Message cooldown" ),
+             to_translation( "Number of turns during which similar messages are hidden.  0 = disabled." ),
+             0, 1000, 0
+           );
+
+        add( "MESSAGE_LIMIT", page_id, to_translation( "Limit message history" ),
+             to_translation( "Number of messages to preserve in the history, and when saving." ),
+             1, 10000, 255
+           );
+
+        add( "NO_UNKNOWN_COMMAND_MSG", page_id,
+             to_translation( "Suppress \"Unknown command\" messages" ),
+             to_translation( "If true, pressing a key with no set function will not display a notice in the chat log." ),
+             false
+           );
+
+        add( "ACCURACY_DISPLAY", page_id, to_translation( "Aim window display style" ),
+             to_translation( "How should confidence and steadiness be communicated to the player." ),
+             //~ aim bar style - bars or numbers
+        { { "numbers", to_translation( "Numbers" ) }, { "bars", to_translation( "Bars" ) } }, "bars"
+           );
+
+        add( "MORALE_STYLE", page_id, to_translation( "Morale style" ),
+             to_translation( "Morale display style in sidebar." ),
+        { { "vertical", to_translation( "Vertical" ) }, { "horizontal", to_translation( "Horizontal" ) } },
+        "Vertical"
+           );
+
+    } );
 
     add_empty_line();
-
-    add( "SIDEBAR_POSITION", "interface", to_translation( "Sidebar position" ),
-         to_translation( "Switch between sidebar on the left or on the right side.  Requires restart." ),
-         //~ sidebar position
-    { { "left", to_translation( "Left" ) }, { "right", to_translation( "Right" ) } }, "right"
-       );
-
-    add( "SIDEBAR_SPACERS", "interface", to_translation( "Draw sidebar spacers" ),
-         to_translation( "If true, adds an extra space between sidebar panels." ),
-         false
-       );
-
-    add( "LOG_FLOW", "interface", to_translation( "Message log flow" ),
-         to_translation( "Where new log messages should show." ),
-         //~ sidebar/message log flow direction
-    { { "new_top", to_translation( "Top" ) }, { "new_bottom", to_translation( "Bottom" ) } },
-    "new_bottom"
-       );
-
-    add( "MESSAGE_TTL", "interface", to_translation( "Sidebar log message display duration" ),
-         to_translation( "Number of turns after which a message will be removed from the sidebar log.  0 = disabled." ),
-         0, 1000, 0
-       );
-
-    add( "MESSAGE_COOLDOWN", "interface", to_translation( "Message cooldown" ),
-         to_translation( "Number of turns during which similar messages are hidden.  0 = disabled." ),
-         0, 1000, 0
-       );
-
-    add( "MESSAGE_LIMIT", "interface", to_translation( "Limit message history" ),
-         to_translation( "Number of messages to preserve in the history, and when saving." ),
-         1, 10000, 255
-       );
-
-    add( "NO_UNKNOWN_COMMAND_MSG", "interface",
-         to_translation( "Suppress \"Unknown command\" messages" ),
-         to_translation( "If true, pressing a key with no set function will not display a notice in the chat log." ),
-         false
-       );
 
     add( "ACHIEVEMENT_COMPLETED_POPUP", "interface",
          to_translation( "Popup window when achievement completed" ),
@@ -1999,23 +2085,6 @@ void options_manager::add_options_interface()
          to_translation( "Switch between look around panel being left or right." ),
     { { "left", to_translation( "Left" ) }, { "right", to_translation( "Right" ) } },
     "right"
-       );
-
-    add( "ACCURACY_DISPLAY", "interface", to_translation( "Aim window display style" ),
-         to_translation( "How should confidence and steadiness be communicated to the player." ),
-         //~ aim bar style - bars or numbers
-    { { "numbers", to_translation( "Numbers" ) }, { "bars", to_translation( "Bars" ) } }, "bars"
-       );
-
-    add( "MORALE_STYLE", "interface", to_translation( "Morale style" ),
-         to_translation( "Morale display style in sidebar." ),
-    { { "vertical", to_translation( "Vertical" ) }, { "horizontal", to_translation( "Horizontal" ) } },
-    "Vertical"
-       );
-
-    add( "AIM_WIDTH", "interface", to_translation( "Full screen Advanced Inventory Manager" ),
-         to_translation( "If true, Advanced Inventory Manager menu will fit full screen, otherwise it will leave sidebar visible." ),
-         false
        );
 
     add( "MOD_SOURCE", "interface", to_translation( "Display source of content" ),
@@ -2112,55 +2181,62 @@ void options_manager::add_options_graphics()
         this->add_empty_line( "graphics" );
     };
 
-    add( "ANIMATIONS", "graphics", to_translation( "Animations" ),
-         to_translation( "If true, will display enabled animations." ),
-         true
-       );
+    add_option_group( "graphics", Group( "animations",
+                                         to_translation( "Animation settings" ),
+                                         to_translation( "Settings related to animations." ) ),
+    [&]( const std::string & page_id ) {
 
-    add( "ANIMATION_RAIN", "graphics", to_translation( "Rain animation" ),
-         to_translation( "If true, will display weather animations." ),
-         true
-       );
+        add( "ANIMATIONS", page_id, to_translation( "Animations" ),
+             to_translation( "If true, will display enabled animations." ),
+             true
+           );
 
-    get_option( "ANIMATION_RAIN" ).setPrerequisite( "ANIMATIONS" );
+        add( "ANIMATION_RAIN", page_id, to_translation( "Rain animation" ),
+             to_translation( "If true, will display weather animations." ),
+             true
+           );
 
-    add( "ANIMATION_PROJECTILES", "graphics", to_translation( "Projectile animation" ),
-         to_translation( "If true, will display animations for projectiles like bullets, arrows, and thrown items." ),
-         true
-       );
+        get_option( "ANIMATION_RAIN" ).setPrerequisite( "ANIMATIONS" );
 
-    get_option( "ANIMATION_PROJECTILES" ).setPrerequisite( "ANIMATIONS" );
+        add( "ANIMATION_PROJECTILES", page_id, to_translation( "Projectile animation" ),
+             to_translation( "If true, will display animations for projectiles like bullets, arrows, and thrown items." ),
+             true
+           );
 
-    add( "ANIMATION_SCT", "graphics", to_translation( "SCT animation" ),
-         to_translation( "If true, will display scrolling combat text animations." ),
-         true
-       );
+        get_option( "ANIMATION_PROJECTILES" ).setPrerequisite( "ANIMATIONS" );
 
-    get_option( "ANIMATION_SCT" ).setPrerequisite( "ANIMATIONS" );
+        add( "ANIMATION_SCT", page_id, to_translation( "SCT animation" ),
+             to_translation( "If true, will display scrolling combat text animations." ),
+             true
+           );
 
-    add( "ANIMATION_SCT_USE_FONT", "graphics", to_translation( "SCT with Unicode font" ),
-         to_translation( "If true, will display scrolling combat text with Unicode font." ),
-         true
-       );
+        get_option( "ANIMATION_SCT" ).setPrerequisite( "ANIMATIONS" );
 
-    get_option( "ANIMATION_SCT_USE_FONT" ).setPrerequisite( "ANIMATION_SCT" );
+        add( "ANIMATION_SCT_USE_FONT", page_id, to_translation( "SCT with Unicode font" ),
+             to_translation( "If true, will display scrolling combat text with Unicode font." ),
+             true
+           );
 
-    add( "ANIMATION_DELAY", "graphics", to_translation( "Animation delay" ),
-         to_translation( "The amount of time to pause between animation frames in ms." ),
-         0, 100, 10
-       );
+        get_option( "ANIMATION_SCT_USE_FONT" ).setPrerequisite( "ANIMATION_SCT" );
 
-    get_option( "ANIMATION_DELAY" ).setPrerequisite( "ANIMATIONS" );
+        add( "ANIMATION_DELAY", page_id, to_translation( "Animation delay" ),
+             to_translation( "The amount of time to pause between animation frames in ms." ),
+             0, 100, 10
+           );
 
-    add( "BLINK_SPEED", "graphics", to_translation( "Blinking effects speed" ),
-         to_translation( "The speed of every blinking effects in ms." ),
-         100, 5000, 300
-       );
+        get_option( "ANIMATION_DELAY" ).setPrerequisite( "ANIMATIONS" );
 
-    add( "FORCE_REDRAW", "graphics", to_translation( "Force redraw" ),
-         to_translation( "If true, forces the game to redraw at least once per turn." ),
-         true
-       );
+        add( "BLINK_SPEED", page_id, to_translation( "Blinking effects speed" ),
+             to_translation( "The speed of every blinking effects in ms." ),
+             100, 5000, 300
+           );
+
+        add( "FORCE_REDRAW", page_id, to_translation( "Force redraw" ),
+             to_translation( "If true, forces the game to redraw at least once per turn." ),
+             true
+           );
+
+    } );
 
     add_empty_line();
 
@@ -2268,191 +2344,208 @@ void options_manager::add_options_graphics()
 
     add_empty_line();
 
-    add( "USE_TILES", "graphics", to_translation( "Use tiles" ),
-         to_translation( "If true, replaces some TTF rendered text with tiles." ),
-         true, COPT_CURSES_HIDE
-       );
+    add_option_group( "graphics", Group( "tiles",
+                                         to_translation( "Tiles and tileset settings" ),
+                                         to_translation( "Settings related to using tiles and tilesets." ) ),
+    [&]( const std::string & page_id ) {
 
-    add( "TILES", "graphics", to_translation( "Choose tileset" ),
-         to_translation( "Choose the tileset you want to use." ),
-         build_tilesets_list(), "UltimateCataclysm", COPT_CURSES_HIDE
-       ); // populate the options dynamically
+        add( "USE_TILES", page_id, to_translation( "Use tiles" ),
+             to_translation( "If true, replaces some TTF rendered text with tiles." ),
+             true, COPT_CURSES_HIDE
+           );
 
-    add( "USE_DISTANT_TILES", "graphics", to_translation( "Use separate tileset for far" ),
-         to_translation( "If true, when very zoomed out you will use a separate tileset." ),
-         false, COPT_CURSES_HIDE
-       );
+        add( "TILES", page_id, to_translation( "Choose tileset" ),
+             to_translation( "Choose the tileset you want to use." ),
+             build_tilesets_list(), "UltimateCataclysm", COPT_CURSES_HIDE
+           ); // populate the options dynamically
 
-    add( "DISTANT_TILES", "graphics", to_translation( "Choose distant tileset" ),
-         to_translation( "Choose the tileset you want to use for far zoom." ),
-         build_tilesets_list(), "UltimateCataclysm", COPT_CURSES_HIDE
-       ); // populate the options dynamically
+        add( "USE_DISTANT_TILES", page_id, to_translation( "Use separate tileset for far" ),
+             to_translation( "If true, when very zoomed out you will use a separate tileset." ),
+             false, COPT_CURSES_HIDE
+           );
 
-    add( "SWAP_ZOOM", "graphics", to_translation( "Zoom Threshold" ),
-         to_translation( "Choose when you should swap tileset (lower is more zoomed out)." ),
-         1, 4, 2, COPT_CURSES_HIDE
-       ); // populate the options dynamically
+        add( "DISTANT_TILES", page_id, to_translation( "Choose distant tileset" ),
+             to_translation( "Choose the tileset you want to use for far zoom." ),
+             build_tilesets_list(), "UltimateCataclysm", COPT_CURSES_HIDE
+           ); // populate the options dynamically
 
-    get_option( "TILES" ).setPrerequisite( "USE_TILES" );
-    get_option( "USE_DISTANT_TILES" ).setPrerequisite( "USE_TILES" );
-    get_option( "DISTANT_TILES" ).setPrerequisite( "USE_DISTANT_TILES" );
-    get_option( "SWAP_ZOOM" ).setPrerequisite( "USE_DISTANT_TILES" );
+        add( "SWAP_ZOOM", page_id, to_translation( "Zoom Threshold" ),
+             to_translation( "Choose when you should swap tileset (lower is more zoomed out)." ),
+             1, 4, 2, COPT_CURSES_HIDE
+           ); // populate the options dynamically
 
-    add( "USE_OVERMAP_TILES", "graphics", to_translation( "Use tiles to display overmap" ),
-         to_translation( "If true, replaces some TTF-rendered text with tiles for overmap display." ),
-         true, COPT_CURSES_HIDE
-       );
+        get_option( "TILES" ).setPrerequisite( "USE_TILES" );
+        get_option( "USE_DISTANT_TILES" ).setPrerequisite( "USE_TILES" );
+        get_option( "DISTANT_TILES" ).setPrerequisite( "USE_DISTANT_TILES" );
+        get_option( "SWAP_ZOOM" ).setPrerequisite( "USE_DISTANT_TILES" );
 
-    get_option( "USE_OVERMAP_TILES" ).setPrerequisite( "USE_TILES" );
+        add( "USE_OVERMAP_TILES", page_id, to_translation( "Use tiles to display overmap" ),
+             to_translation( "If true, replaces some TTF-rendered text with tiles for overmap display." ),
+             true, COPT_CURSES_HIDE
+           );
 
-    std::vector<options_manager::id_and_option> om_tilesets = build_tilesets_list();
-    // filter out iso tilesets from overmap tilesets
-    om_tilesets.erase( std::remove_if( om_tilesets.begin(), om_tilesets.end(), []( const auto & it ) {
-        static const std::string iso_suffix = "_iso";
-        const std::string &id = it.first;
-        return id.size() >= iso_suffix.size() &&
-               id.compare( id.size() - iso_suffix.size(), iso_suffix.size(), iso_suffix ) == 0;
-    } ), om_tilesets.end() );
+        get_option( "USE_OVERMAP_TILES" ).setPrerequisite( "USE_TILES" );
 
-    add( "OVERMAP_TILES", "graphics", to_translation( "Choose overmap tileset" ),
-         to_translation( "Choose the overmap tileset you want to use." ),
-         om_tilesets, "Larwick Overmap", COPT_CURSES_HIDE
-       ); // populate the options dynamically
+        std::vector<options_manager::id_and_option> om_tilesets = build_tilesets_list();
+        // filter out iso tilesets from overmap tilesets
+        om_tilesets.erase( std::remove_if( om_tilesets.begin(), om_tilesets.end(), []( const auto & it ) {
+            static const std::string iso_suffix = "_iso";
+            const std::string &id = it.first;
+            return id.size() >= iso_suffix.size() &&
+                   id.compare( id.size() - iso_suffix.size(), iso_suffix.size(), iso_suffix ) == 0;
+        } ), om_tilesets.end() );
 
-    get_option( "OVERMAP_TILES" ).setPrerequisite( "USE_OVERMAP_TILES" );
+        add( "OVERMAP_TILES", page_id, to_translation( "Choose overmap tileset" ),
+             to_translation( "Choose the overmap tileset you want to use." ),
+             om_tilesets, "Larwick Overmap", COPT_CURSES_HIDE
+           ); // populate the options dynamically
 
-    add_empty_line();
+        get_option( "OVERMAP_TILES" ).setPrerequisite( "USE_OVERMAP_TILES" );
 
-    add( "NV_GREEN_TOGGLE", "graphics", to_translation( "Night vision color overlay" ),
-         to_translation( "If true, toggle the color overlay from night vision goggles and other similar tools." ),
-         true, COPT_CURSES_HIDE
-       );
+    } );
 
-    add( "MEMORY_MAP_MODE", "graphics", to_translation( "Memory map overlay preset" ),
-    to_translation( "Specify the overlay in which the memory map is drawn.  Requires restart.  For custom overlay, define RGB values for dark and bright colors as well as gamma." ), {
-        { "color_pixel_darken", to_translation( "Darkened" ) },
-        { "color_pixel_sepia_light", to_translation( "Sepia" ) },
-        { "color_pixel_sepia_dark", to_translation( "Sepia Dark" ) },
-        { "color_pixel_blue_dark", to_translation( "Blue Dark" ) },
-        { "color_pixel_custom", to_translation( "Custom" ) },
-    }, "color_pixel_sepia_light", COPT_CURSES_HIDE
-       );
+    add_option_group( "graphics", Group( "night_vision",
+                                         to_translation( "Tiles and tileset settings" ),
+                                         to_translation( "Settings related to using tiles and tilesets." ) ),
+    [&]( const std::string & page_id ) {
 
-    add( "MEMORY_RGB_DARK_RED", "graphics", to_translation( "Custom dark color RGB overlay - RED" ),
-         to_translation( "Specify RGB value for color RED for dark color overlay." ),
-         0, 255, 39, COPT_CURSES_HIDE );
+        add( "NV_GREEN_TOGGLE", page_id, to_translation( "Night vision color overlay" ),
+             to_translation( "If true, toggle the color overlay from night vision goggles and other similar tools." ),
+             true, COPT_CURSES_HIDE
+           );
 
-    get_option( "MEMORY_RGB_DARK_RED" ).setPrerequisite( "MEMORY_MAP_MODE", "color_pixel_custom" );
+        add( "MEMORY_MAP_MODE", page_id, to_translation( "Memory map overlay preset" ),
+        to_translation( "Specify the overlay in which the memory map is drawn.  Requires restart.  For custom overlay, define RGB values for dark and bright colors as well as gamma." ), {
+            { "color_pixel_darken", to_translation( "Darkened" ) },
+            { "color_pixel_sepia_light", to_translation( "Sepia" ) },
+            { "color_pixel_sepia_dark", to_translation( "Sepia Dark" ) },
+            { "color_pixel_blue_dark", to_translation( "Blue Dark" ) },
+            { "color_pixel_custom", to_translation( "Custom" ) },
+        }, "color_pixel_sepia_light", COPT_CURSES_HIDE
+           );
 
-    add( "MEMORY_RGB_DARK_GREEN", "graphics",
-         to_translation( "Custom dark color RGB overlay - GREEN" ),
-         to_translation( "Specify RGB value for color GREEN for dark color overlay." ),
-         0, 255, 23, COPT_CURSES_HIDE );
+        add( "MEMORY_RGB_DARK_RED", page_id, to_translation( "Custom dark color RGB overlay - RED" ),
+             to_translation( "Specify RGB value for color RED for dark color overlay." ),
+             0, 255, 39, COPT_CURSES_HIDE );
 
-    get_option( "MEMORY_RGB_DARK_GREEN" ).setPrerequisite( "MEMORY_MAP_MODE", "color_pixel_custom" );
+        get_option( "MEMORY_RGB_DARK_RED" ).setPrerequisite( "MEMORY_MAP_MODE", "color_pixel_custom" );
 
-    add( "MEMORY_RGB_DARK_BLUE", "graphics", to_translation( "Custom dark color RGB overlay - BLUE" ),
-         to_translation( "Specify RGB value for color BLUE for dark color overlay." ),
-         0, 255, 19, COPT_CURSES_HIDE );
+        add( "MEMORY_RGB_DARK_GREEN", page_id,
+             to_translation( "Custom dark color RGB overlay - GREEN" ),
+             to_translation( "Specify RGB value for color GREEN for dark color overlay." ),
+             0, 255, 23, COPT_CURSES_HIDE );
 
-    get_option( "MEMORY_RGB_DARK_BLUE" ).setPrerequisite( "MEMORY_MAP_MODE", "color_pixel_custom" );
+        get_option( "MEMORY_RGB_DARK_GREEN" ).setPrerequisite( "MEMORY_MAP_MODE", "color_pixel_custom" );
 
-    add( "MEMORY_RGB_BRIGHT_RED", "graphics",
-         to_translation( "Custom bright color RGB overlay - RED" ),
-         to_translation( "Specify RGB value for color RED for bright color overlay." ),
-         0, 255, 241, COPT_CURSES_HIDE );
+        add( "MEMORY_RGB_DARK_BLUE", page_id, to_translation( "Custom dark color RGB overlay - BLUE" ),
+             to_translation( "Specify RGB value for color BLUE for dark color overlay." ),
+             0, 255, 19, COPT_CURSES_HIDE );
 
-    get_option( "MEMORY_RGB_BRIGHT_RED" ).setPrerequisite( "MEMORY_MAP_MODE", "color_pixel_custom" );
+        get_option( "MEMORY_RGB_DARK_BLUE" ).setPrerequisite( "MEMORY_MAP_MODE", "color_pixel_custom" );
 
-    add( "MEMORY_RGB_BRIGHT_GREEN", "graphics",
-         to_translation( "Custom bright color RGB overlay - GREEN" ),
-         to_translation( "Specify RGB value for color GREEN for bright color overlay." ),
-         0, 255, 220, COPT_CURSES_HIDE );
+        add( "MEMORY_RGB_BRIGHT_RED", page_id,
+             to_translation( "Custom bright color RGB overlay - RED" ),
+             to_translation( "Specify RGB value for color RED for bright color overlay." ),
+             0, 255, 241, COPT_CURSES_HIDE );
 
-    get_option( "MEMORY_RGB_BRIGHT_GREEN" ).setPrerequisite( "MEMORY_MAP_MODE", "color_pixel_custom" );
+        get_option( "MEMORY_RGB_BRIGHT_RED" ).setPrerequisite( "MEMORY_MAP_MODE", "color_pixel_custom" );
 
-    add( "MEMORY_RGB_BRIGHT_BLUE", "graphics",
-         to_translation( "Custom bright color RGB overlay - BLUE" ),
-         to_translation( "Specify RGB value for color BLUE for bright color overlay." ),
-         0, 255, 163, COPT_CURSES_HIDE );
+        add( "MEMORY_RGB_BRIGHT_GREEN", page_id,
+             to_translation( "Custom bright color RGB overlay - GREEN" ),
+             to_translation( "Specify RGB value for color GREEN for bright color overlay." ),
+             0, 255, 220, COPT_CURSES_HIDE );
 
-    get_option( "MEMORY_RGB_BRIGHT_BLUE" ).setPrerequisite( "MEMORY_MAP_MODE", "color_pixel_custom" );
+        get_option( "MEMORY_RGB_BRIGHT_GREEN" ).setPrerequisite( "MEMORY_MAP_MODE", "color_pixel_custom" );
 
-    add( "MEMORY_GAMMA", "graphics", to_translation( "Custom gamma for overlay" ),
-         to_translation( "Specify gamma value for overlay." ),
-         1.0f, 3.0f, 1.6f, 0.1f, COPT_CURSES_HIDE );
+        add( "MEMORY_RGB_BRIGHT_BLUE", page_id,
+             to_translation( "Custom bright color RGB overlay - BLUE" ),
+             to_translation( "Specify RGB value for color BLUE for bright color overlay." ),
+             0, 255, 163, COPT_CURSES_HIDE );
 
-    get_option( "MEMORY_GAMMA" ).setPrerequisite( "MEMORY_MAP_MODE", "color_pixel_custom" );
+        get_option( "MEMORY_RGB_BRIGHT_BLUE" ).setPrerequisite( "MEMORY_MAP_MODE", "color_pixel_custom" );
 
-    add_empty_line();
+        add( "MEMORY_GAMMA", page_id, to_translation( "Custom gamma for overlay" ),
+             to_translation( "Specify gamma value for overlay." ),
+             1.0f, 3.0f, 1.6f, 0.1f, COPT_CURSES_HIDE );
 
-    add( "PIXEL_MINIMAP", "graphics", to_translation( "Pixel minimap" ),
-         to_translation( "If true, shows the pixel-detail minimap in game after the save is loaded.  Use the 'Toggle Pixel Minimap' action key to change its visibility during gameplay." ),
-         true, COPT_CURSES_HIDE
-       );
+        get_option( "MEMORY_GAMMA" ).setPrerequisite( "MEMORY_MAP_MODE", "color_pixel_custom" );
 
-    add( "PIXEL_MINIMAP_MODE", "graphics", to_translation( "Pixel minimap drawing mode" ),
-    to_translation( "Specified the mode in which the minimap drawn." ), {
-        { "solid", to_translation( "Solid" ) },
-        { "squares", to_translation( "Squares" ) },
-        { "dots", to_translation( "Dots" ) }
-    }, "dots", COPT_CURSES_HIDE
-       );
+    } );
 
-    get_option( "PIXEL_MINIMAP_MODE" ).setPrerequisite( "PIXEL_MINIMAP" );
+    add_option_group( "graphics", Group( "minimap",
+                                         to_translation( "Minimap settings" ),
+                                         to_translation( "Settings related to minimap." ) ),
+    [&]( const std::string & page_id ) {
 
-    add( "PIXEL_MINIMAP_BRIGHTNESS", "graphics", to_translation( "Pixel minimap brightness" ),
-         to_translation( "Overall brightness of pixel-detail minimap." ),
-         10, 300, 100, COPT_CURSES_HIDE
-       );
+        add( "PIXEL_MINIMAP", page_id, to_translation( "Pixel minimap" ),
+             to_translation( "If true, shows the pixel-detail minimap in game after the save is loaded.  Use the 'Toggle Pixel Minimap' action key to change its visibility during gameplay." ),
+             true, COPT_CURSES_HIDE
+           );
 
-    get_option( "PIXEL_MINIMAP_BRIGHTNESS" ).setPrerequisite( "PIXEL_MINIMAP" );
+        add( "PIXEL_MINIMAP_MODE", page_id, to_translation( "Pixel minimap drawing mode" ),
+        to_translation( "Specified the mode in which the minimap drawn." ), {
+            { "solid", to_translation( "Solid" ) },
+            { "squares", to_translation( "Squares" ) },
+            { "dots", to_translation( "Dots" ) }
+        }, "dots", COPT_CURSES_HIDE
+           );
 
-    add( "PIXEL_MINIMAP_HEIGHT", "graphics", to_translation( "Pixel minimap height" ),
-         to_translation( "Height of pixel-detail minimap, measured in terminal rows.  Set to 0 for default spacing." ),
-         0, 100, 0, COPT_CURSES_HIDE
-       );
+        get_option( "PIXEL_MINIMAP_MODE" ).setPrerequisite( "PIXEL_MINIMAP" );
 
-    get_option( "PIXEL_MINIMAP_HEIGHT" ).setPrerequisite( "PIXEL_MINIMAP" );
+        add( "PIXEL_MINIMAP_BRIGHTNESS", page_id, to_translation( "Pixel minimap brightness" ),
+             to_translation( "Overall brightness of pixel-detail minimap." ),
+             10, 300, 100, COPT_CURSES_HIDE
+           );
 
-    add( "PIXEL_MINIMAP_SCALE_TO_FIT", "graphics", to_translation( "Scale pixel minimap" ),
-         to_translation( "If true, scale pixel minimap to fit its surroundings.  May produce crappy results, especially in modes other than \"Solid\"." ),
-         false, COPT_CURSES_HIDE
-       );
+        get_option( "PIXEL_MINIMAP_BRIGHTNESS" ).setPrerequisite( "PIXEL_MINIMAP" );
 
-    get_option( "PIXEL_MINIMAP_SCALE_TO_FIT" ).setPrerequisite( "PIXEL_MINIMAP" );
+        add( "PIXEL_MINIMAP_HEIGHT", page_id, to_translation( "Pixel minimap height" ),
+             to_translation( "Height of pixel-detail minimap, measured in terminal rows.  Set to 0 for default spacing." ),
+             0, 100, 0, COPT_CURSES_HIDE
+           );
 
-    add( "PIXEL_MINIMAP_RATIO", "graphics", to_translation( "Maintain pixel minimap aspect ratio" ),
-         to_translation( "If true, preserves the square shape of tiles shown on the pixel minimap." ),
-         true, COPT_CURSES_HIDE
-       );
+        get_option( "PIXEL_MINIMAP_HEIGHT" ).setPrerequisite( "PIXEL_MINIMAP" );
 
-    get_option( "PIXEL_MINIMAP_RATIO" ).setPrerequisite( "PIXEL_MINIMAP" );
+        add( "PIXEL_MINIMAP_SCALE_TO_FIT", page_id, to_translation( "Scale pixel minimap" ),
+             to_translation( "If true, scale pixel minimap to fit its surroundings.  May produce crappy results, especially in modes other than \"Solid\"." ),
+             false, COPT_CURSES_HIDE
+           );
 
-    add( "PIXEL_MINIMAP_BEACON_SIZE", "graphics",
-         to_translation( "Creature beacon size" ),
-         to_translation( "Controls how big the creature beacons are.  Value is in minimap tiles." ),
-         1, 4, 2, COPT_CURSES_HIDE
-       );
+        get_option( "PIXEL_MINIMAP_SCALE_TO_FIT" ).setPrerequisite( "PIXEL_MINIMAP" );
 
-    get_option( "PIXEL_MINIMAP_BEACON_SIZE" ).setPrerequisite( "PIXEL_MINIMAP" );
+        add( "PIXEL_MINIMAP_RATIO", page_id, to_translation( "Maintain pixel minimap aspect ratio" ),
+             to_translation( "If true, preserves the square shape of tiles shown on the pixel minimap." ),
+             true, COPT_CURSES_HIDE
+           );
 
-    add( "PIXEL_MINIMAP_BLINK", "graphics", to_translation( "Hostile creature beacon blink speed" ),
-         to_translation( "Controls how fast the hostile creature beacons blink on the pixel minimap.  Value is multiplied by 200ms.  0 = disabled." ),
-         0, 50, 10, COPT_CURSES_HIDE
-       );
+        get_option( "PIXEL_MINIMAP_RATIO" ).setPrerequisite( "PIXEL_MINIMAP" );
 
-    get_option( "PIXEL_MINIMAP_BLINK" ).setPrerequisite( "PIXEL_MINIMAP" );
+        add( "PIXEL_MINIMAP_BEACON_SIZE", page_id,
+             to_translation( "Creature beacon size" ),
+             to_translation( "Controls how big the creature beacons are.  Value is in minimap tiles." ),
+             1, 4, 2, COPT_CURSES_HIDE
+           );
 
-    add( "PIXEL_MINIMAP_BG", "graphics", to_translation( "Background color" ),
-         to_translation( "What color the minimap background should be.  Either based on color theme or (0,0,0) black." ),
-    {
-        { "theme", to_translation( "Theme" ) },
-        { "black", to_translation( "Black" ) }
-    }, "black", COPT_CURSES_HIDE
-       );
+        get_option( "PIXEL_MINIMAP_BEACON_SIZE" ).setPrerequisite( "PIXEL_MINIMAP" );
 
-    get_option( "PIXEL_MINIMAP_BLINK" ).setPrerequisite( "PIXEL_MINIMAP" );
+        add( "PIXEL_MINIMAP_BLINK", page_id, to_translation( "Hostile creature beacon blink speed" ),
+             to_translation( "Controls how fast the hostile creature beacons blink on the pixel minimap.  Value is multiplied by 200ms.  0 = disabled." ),
+             0, 50, 10, COPT_CURSES_HIDE
+           );
+
+        get_option( "PIXEL_MINIMAP_BLINK" ).setPrerequisite( "PIXEL_MINIMAP" );
+
+        add( "PIXEL_MINIMAP_BG", page_id, to_translation( "Background color" ),
+             to_translation( "What color the minimap background should be.  Either based on color theme or (0,0,0) black." ),
+        {
+            { "theme", to_translation( "Theme" ) },
+            { "black", to_translation( "Black" ) }
+        }, "black", COPT_CURSES_HIDE
+           );
+
+        get_option( "PIXEL_MINIMAP_BLINK" ).setPrerequisite( "PIXEL_MINIMAP" );
+
+    } );
 
     add_empty_line();
 
