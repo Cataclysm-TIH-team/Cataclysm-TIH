@@ -27,7 +27,7 @@ Added possibility to change color for 'Explored' tiles through json editing
 Show gender on NPC
 Added possibility to show or hide several non-player-related messages in the log
 Much more detailed info for player stats in new character creation menu
-Larger and more I18n-friendly safemode UI
+Larger and more I18n-friendly safemode and autopickup UIs
 Larger, reorganized player info menu with customizable columns width
 
 ## Balance
