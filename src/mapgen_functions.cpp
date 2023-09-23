@@ -46,6 +46,7 @@ static const item_group_id Item_spawn_data_wreckage( "wreckage" );
 static const mongroup_id GROUP_FAMOUS_SINGERS( "GROUP_FAMOUS_SINGERS" );
 static const mongroup_id GROUP_ZOMBIE( "GROUP_ZOMBIE" );
 
+static const oter_str_id oter_city_center( "city_center" );
 static const oter_str_id oter_crater( "crater" );
 static const oter_str_id oter_crater_core( "crater_core" );
 static const oter_str_id oter_forest_thick( "forest_thick" );
@@ -407,7 +408,8 @@ void mapgen_road( mapgendata &dat )
             // 4-way intersection
             for( int dir = 0; dir < 8; dir++ ) {
                 fourways_neswx[dir] = ( dat.t_nesw[dir] == oter_road_nesw ||
-                                        dat.t_nesw[dir] == oter_road_nesw_manhole );
+                                        dat.t_nesw[dir] == oter_road_nesw_manhole ||
+                                        dat.t_nesw[dir] == oter_city_center );
             }
             // is this the middle, or which side or corner, of a plaza?
             plaza_dir = compare_neswx( fourways_neswx, {1, 1, 1, 1, 1, 1, 1, 1} ) ? 8 :

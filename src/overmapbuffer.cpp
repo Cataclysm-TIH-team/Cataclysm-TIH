@@ -43,6 +43,7 @@
 
 class map_extra;
 
+static const oter_type_str_id oter_type_city_center( "city_center" );
 static const oter_type_str_id oter_type_bridge( "bridge" );
 static const oter_type_str_id oter_type_bridge_road( "bridge_road" );
 static const oter_type_str_id oter_type_bridgehead_ground( "bridgehead_ground" );
@@ -919,7 +920,8 @@ static int get_terrain_cost( const tripoint_abs_omt &omt_pos, const overmap_path
         ( oter->get_type_id() == oter_type_bridge_road ) ||
         ( oter->get_type_id() == oter_type_bridgehead_ground ) ||
         ( oter->get_type_id() == oter_type_bridgehead_ramp ) ||
-        ( oter->get_type_id() == oter_type_road_nesw_manhole ) ) {
+        ( oter->get_type_id() == oter_type_road_nesw_manhole ) ||
+        ( oter->get_type_id() == oter_type_city_center ) ) {
         return params.road_cost;
     } else if( oter->get_type_id() == oter_type_field ) {
         return params.field_cost;
