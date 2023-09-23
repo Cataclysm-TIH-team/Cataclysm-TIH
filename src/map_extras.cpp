@@ -2690,6 +2690,11 @@ static bool mx_fungal_zone( map &/*m*/, const tripoint &abs_sub )
         }
     }
 
+    // If there's no parks in the city, bail out
+    if( valid_omt.empty() ) {
+        return false;
+    }
+
     const tripoint_abs_omt park_omt = random_entry( valid_omt, city_center_omt );
 
     tinymap fungal_map;
