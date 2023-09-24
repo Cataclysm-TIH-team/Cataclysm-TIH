@@ -43,11 +43,11 @@
 
 class map_extra;
 
-static const oter_type_str_id oter_type_city_center( "city_center" );
 static const oter_type_str_id oter_type_bridge( "bridge" );
 static const oter_type_str_id oter_type_bridge_road( "bridge_road" );
 static const oter_type_str_id oter_type_bridgehead_ground( "bridgehead_ground" );
 static const oter_type_str_id oter_type_bridgehead_ramp( "bridgehead_ramp" );
+static const oter_type_str_id oter_type_city_center( "city_center" );
 static const oter_type_str_id oter_type_deep_rock( "deep_rock" );
 static const oter_type_str_id oter_type_empty_rock( "empty_rock" );
 static const oter_type_str_id oter_type_field( "field" );
