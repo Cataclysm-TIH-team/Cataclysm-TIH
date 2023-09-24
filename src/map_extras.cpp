@@ -122,6 +122,7 @@ static const map_extra_id map_extra_mx_clay_deposit( "mx_clay_deposit" );
 static const map_extra_id map_extra_mx_clearcut( "mx_clearcut" );
 static const map_extra_id map_extra_mx_corpses( "mx_corpses" );
 static const map_extra_id map_extra_mx_dead_vegetation( "mx_dead_vegetation" );
+static const map_extra_id map_extra_mx_fungal_zone( "mx_fungal_zone" );
 static const map_extra_id map_extra_mx_grove( "mx_grove" );
 static const map_extra_id map_extra_mx_helicopter( "mx_helicopter" );
 static const map_extra_id map_extra_mx_house_wasp( "mx_house_wasp" );
@@ -155,6 +156,7 @@ static const mongroup_id GROUP_TURRET_SPEAKER( "GROUP_TURRET_SPEAKER" );
 static const mongroup_id GROUP_WASP_GUARD( "GROUP_WASP_GUARD" );
 static const mongroup_id GROUP_WASP_QUEEN( "GROUP_WASP_QUEEN" );
 
+static const mtype_id mon_fungaloid_queen( "mon_fungaloid_queen" );
 static const mtype_id mon_turret_riot( "mon_turret_riot" );
 static const mtype_id mon_turret_searchlight( "mon_turret_searchlight" );
 static const mtype_id mon_wolf( "mon_wolf" );
@@ -2670,6 +2672,60 @@ static bool mx_city_trap( map &/*m*/, const tripoint &abs_sub )
     return true;
 }
 
+static bool mx_fungal_zone( map &/*m*/, const tripoint &abs_sub )
+{
+    //First, find a city
+    // TODO: fix point types
+    const city_reference c = overmap_buffer.closest_city( tripoint_abs_sm( abs_sub ) );
+    const tripoint_abs_omt city_center_omt = project_to<coords::omt>( c.abs_sm_pos );
+
+    //Then find out which types of parks (defined in regional settings) exist in this city
+    std::vector<tripoint_abs_omt> valid_omt;
+    for( const tripoint_abs_omt &p : points_in_radius( city_center_omt, c.city->size ) ) {
+        const auto &parks = overmap_buffer.get_existing_om_global( p ).
+                            om->get_settings().city_spec.parks.all;
+        if( std::find( parks.begin(), parks.end(),
+                       overmap_buffer.ter( p ).obj().get_type_id().str() ) != parks.end() ) {
+            valid_omt.push_back( p );
+        }
+    }
+
+    // If there's no parks in the city, bail out
+    if( valid_omt.empty() ) {
+        return false;
+    }
+
+    const tripoint_abs_omt park_omt = random_entry( valid_omt, city_center_omt );
+
+    tinymap fungal_map;
+    fungal_map.load( project_to<coords::sm>( park_omt ), false );
+
+    // Then find suitable location for fungal spire to spawn (grass, dirt etc)
+    const tripoint submap_center = { SEEX, SEEY, abs_sub.z };
+    std::vector<tripoint> suitable_locations;
+    for( const tripoint &loc : fungal_map.points_in_radius( submap_center, 10 ) ) {
+        if( fungal_map.has_flag_ter( ter_furn_flag::TFLAG_DIGGABLE, loc ) ) {
+            suitable_locations.push_back( loc );
+        }
+    }
+
+    // If there's no suitable location found, bail out
+    if( suitable_locations.empty() ) {
+        return false;
+    }
+
+    const tripoint suitable_location = random_entry( suitable_locations, submap_center );
+    fungal_map.add_spawn( mon_fungaloid_queen, 1, suitable_location );
+    fungal_map.place_spawns( GROUP_FUNGI_FUNGALOID, 1,
+                             suitable_location.xy() + point_north_west,
+                             suitable_location.xy() + point_south_east,
+                             3, true );
+
+    fungal_map.save();
+
+    return true;
+}
+
 static FunctionMap builtin_functions = {
     { map_extra_mx_null, mx_null },
     { map_extra_mx_roadworks, mx_roadworks },
@@ -2696,6 +2752,7 @@ static FunctionMap builtin_functions = {
     { map_extra_mx_looters, mx_looters },
     { map_extra_mx_corpses, mx_corpses },
     { map_extra_mx_city_trap, mx_city_trap },
+    { map_extra_mx_fungal_zone, mx_fungal_zone },
     { map_extra_mx_reed, mx_reed }
 };
 
