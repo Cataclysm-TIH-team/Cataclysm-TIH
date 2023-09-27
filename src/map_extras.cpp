@@ -27,6 +27,7 @@
 #include "enums.h"
 #include "field_type.h"
 #include "fungal_effects.h"
+#include "game.h"
 #include "game_constants.h"
 #include "generic_factory.h"
 #include "item.h"
@@ -115,6 +116,7 @@ static const itype_id itype_wheel( "wheel" );
 static const itype_id itype_withered( "withered" );
 
 static const map_extra_id map_extra_mx_bandits_block( "mx_bandits_block" );
+static const map_extra_id map_extra_mx_barricaded_house( "mx_barricaded_house" );
 static const map_extra_id map_extra_mx_burned_ground( "mx_burned_ground" );
 static const map_extra_id map_extra_mx_casings( "mx_casings" );
 static const map_extra_id map_extra_mx_city_trap( "mx_city_trap" );
@@ -2681,12 +2683,12 @@ static bool mx_fungal_zone( map &/*m*/, const tripoint &abs_sub )
 
     //Then find out which types of parks (defined in regional settings) exist in this city
     std::vector<tripoint_abs_omt> valid_omt;
-    for( const tripoint_abs_omt &p : points_in_radius( city_center_omt, c.city->size ) ) {
-        const auto &parks = overmap_buffer.get_existing_om_global( p ).
-                            om->get_settings().city_spec.parks.all;
-        if( std::find( parks.begin(), parks.end(),
-                       overmap_buffer.ter( p ).obj().get_type_id().str() ) != parks.end() ) {
-            valid_omt.push_back( p );
+    const auto &parks = g->get_cur_om().get_settings().city_spec.get_all_parks();
+    for( const auto &elem : parks ) {
+        for( const tripoint_abs_omt &p : points_in_radius( city_center_omt, c.city->size ) ) {
+            if( overmap_buffer.check_overmap_special_type( elem.obj, p ) ) {
+                valid_omt.push_back( p );
+            }
         }
     }
 
@@ -2753,7 +2755,8 @@ static FunctionMap builtin_functions = {
     { map_extra_mx_corpses, mx_corpses },
     { map_extra_mx_city_trap, mx_city_trap },
     { map_extra_mx_fungal_zone, mx_fungal_zone },
-    { map_extra_mx_reed, mx_reed }
+    { map_extra_mx_reed, mx_reed },
+    { map_extra_mx_barricaded_house, mx_barricaded_house }
 };
 
 map_extra_pointer get_function( const map_extra_id &name )
