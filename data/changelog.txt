@@ -18,6 +18,7 @@ Returned back previously obsoleted SPIW weapons
 Added Helicopter Pilot Training CBM which allows flying helicopters even without proficiency
 Added ability to remove plants from planters without destroying planter
 Added overhead light to three default shelters
+Added 'fungal-infested park' and 'barricaded house' map extras which can spawn only in cities
 
 ## Interface
 Item categories spawn rate is now located in game options rather than hidden in json
