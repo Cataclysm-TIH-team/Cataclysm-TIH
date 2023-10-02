@@ -27,6 +27,7 @@
 #include "enums.h"
 #include "field_type.h"
 #include "fungal_effects.h"
+#include "game.h"
 #include "game_constants.h"
 #include "generic_factory.h"
 #include "item.h"
@@ -39,7 +40,9 @@
 #include "mapgen.h"
 #include "mapgen_functions.h"
 #include "mapgendata.h"
+#include "mission.h"
 #include "mongroup.h"
+#include "npc_class.h"
 #include "options.h"
 #include "overmap.h"
 #include "overmapbuffer.h"
@@ -98,6 +101,7 @@ static const itype_id itype_ash( "ash" );
 static const itype_id itype_bag_canvas( "bag_canvas" );
 static const itype_id itype_bottle_glass( "bottle_glass" );
 static const itype_id itype_chunk_sulfur( "chunk_sulfur" );
+static const itype_id itype_glock_17( "glock_17" );
 static const itype_id itype_hatchet( "hatchet" );
 static const itype_id itype_jack_small( "jack_small" );
 static const itype_id itype_landmine( "landmine" );
@@ -115,6 +119,7 @@ static const itype_id itype_wheel( "wheel" );
 static const itype_id itype_withered( "withered" );
 
 static const map_extra_id map_extra_mx_bandits_block( "mx_bandits_block" );
+static const map_extra_id map_extra_mx_barricaded_house( "mx_barricaded_house" );
 static const map_extra_id map_extra_mx_burned_ground( "mx_burned_ground" );
 static const map_extra_id map_extra_mx_casings( "mx_casings" );
 static const map_extra_id map_extra_mx_city_trap( "mx_city_trap" );
@@ -160,6 +165,7 @@ static const mtype_id mon_fungaloid_queen( "mon_fungaloid_queen" );
 static const mtype_id mon_turret_riot( "mon_turret_riot" );
 static const mtype_id mon_turret_searchlight( "mon_turret_searchlight" );
 static const mtype_id mon_wolf( "mon_wolf" );
+static const mtype_id mon_zombie( "mon_zombie" );
 static const mtype_id mon_zombie_soldier( "mon_zombie_soldier" );
 
 static const oter_type_str_id oter_type_bridge( "bridge" );
@@ -169,6 +175,7 @@ static const oter_type_str_id oter_type_road( "road" );
 static const relic_procgen_id relic_procgen_data_alien_reality( "alien_reality" );
 
 static const string_id<class npc_template> npc_template_bandit( "bandit" );
+static const string_id<class npc_template> npc_template_thug( "thug" );
 
 static const ter_str_id ter_t_dirt( "t_dirt" );
 static const ter_str_id ter_t_grass_dead( "t_grass_dead" );
@@ -2681,12 +2688,12 @@ static bool mx_fungal_zone( map &/*m*/, const tripoint &abs_sub )
 
     //Then find out which types of parks (defined in regional settings) exist in this city
     std::vector<tripoint_abs_omt> valid_omt;
-    for( const tripoint_abs_omt &p : points_in_radius( city_center_omt, c.city->size ) ) {
-        const auto &parks = overmap_buffer.get_existing_om_global( p ).
-                            om->get_settings().city_spec.parks.all;
-        if( std::find( parks.begin(), parks.end(),
-                       overmap_buffer.ter( p ).obj().get_type_id().str() ) != parks.end() ) {
-            valid_omt.push_back( p );
+    const auto &parks = g->get_cur_om().get_settings().city_spec.get_all_parks();
+    for( const auto &elem : parks ) {
+        for( const tripoint_abs_omt &p : points_in_radius( city_center_omt, c.city->size ) ) {
+            if( overmap_buffer.check_overmap_special_type( elem.obj, p ) ) {
+                valid_omt.push_back( p );
+            }
         }
     }
 
@@ -2695,7 +2702,7 @@ static bool mx_fungal_zone( map &/*m*/, const tripoint &abs_sub )
         return false;
     }
 
-    const tripoint_abs_omt park_omt = random_entry( valid_omt, city_center_omt );
+    const tripoint_abs_omt &park_omt = random_entry( valid_omt, city_center_omt );
 
     tinymap fungal_map;
     fungal_map.load( project_to<coords::sm>( park_omt ), false );
@@ -2722,6 +2729,199 @@ static bool mx_fungal_zone( map &/*m*/, const tripoint &abs_sub )
                              3, true );
 
     fungal_map.save();
+
+    return true;
+}
+
+// check if tile at p should be boarded with some kind of furniture.
+static void add_boardable( const map &m, const tripoint &p, std::vector<tripoint> &vec )
+{
+    if( m.has_furn( p ) ) {
+        // Don't need to board this up, is already occupied
+        return;
+    }
+    if( m.ter( p ) != t_floor ) {
+        // Other terrain (door, wall, ...), not boarded either
+        return;
+    }
+    if( m.is_outside( p ) ) {
+        // Don't board up the outside
+        return;
+    }
+    if( std::find( vec.begin(), vec.end(), p ) != vec.end() ) {
+        // Already registered to be boarded
+        return;
+    }
+    vec.push_back( p );
+}
+
+static void board_up( map &m, const tripoint_range<tripoint> &range )
+{
+    std::vector<tripoint> furnitures1;
+    std::vector<tripoint> furnitures2;
+    std::vector<tripoint> boardables;
+
+    ter_id window_type;
+    switch( rng( 1, 4 ) ) {
+        case 1:
+            window_type = t_window_boarded;
+            break;
+        case 2:
+            window_type = t_window_reinforced;
+            break;
+        case 3:
+            window_type = t_window_enhanced;
+            break;
+        case 4:
+            window_type = t_window_domestic_taped;
+            break;
+    }
+
+    for( const tripoint &p : range ) {
+        bool must_board_around = false;
+        const ter_id t = m.ter( p );
+        if( m.has_flag( ter_furn_flag::TFLAG_WINDOW, p ) ) {
+            // Windows are always to the outside and must be boarded
+            must_board_around = true;
+            m.ter_set( p, window_type );
+        } else if( m.has_flag( "BARRICADABLE_DOOR", p ) ) {
+            // Check for doors that lead to outside and thus need to be barricaded
+            if( m.is_outside( p + tripoint_north ) ||
+                m.is_outside( p + tripoint_south ) ||
+                m.is_outside( p + tripoint_east ) ||
+                m.is_outside( p + tripoint_west ) ) {
+                if( t == t_door_locked || t == t_door_c || t == t_door_o ) {
+                    m.ter_set( p, rng( 1, 2 ) ? t_door_boarded : t_rdoor_boarded );
+                }
+                if( t == t_door_locked_peep || t == t_door_c_peep || t == t_door_o_peep ) {
+                    m.ter_set( p, t_door_boarded_peep );
+                }
+                must_board_around = true;
+            } else {
+                // internal doors are opened instead
+                m.ter_set( p, t_door_o );
+            }
+        }
+
+        if( must_board_around ) {
+            // Board up the surroundings of the door/window
+            for( const tripoint &neigh : points_in_radius( p, 1 ) ) {
+                if( neigh == p ) {
+                    continue;
+                }
+                add_boardable( m, neigh, boardables );
+            }
+        }
+    }
+    // Find all furniture that can be used to board up some place
+    for( const tripoint &p : range ) {
+        if( std::find( boardables.begin(), boardables.end(), p ) != boardables.end() ) {
+            continue;
+        }
+        if( !m.has_furn( p ) ) {
+            continue;
+        }
+        // If the furniture is movable and the character can move it, use it to barricade
+        //  is workable here as NPCs by definition are not starting the game.  (Let's hope.)
+        ///\EFFECT_STR determines what furniture might be used as a starting area barricade
+        if( m.furn( p ).obj().is_movable() &&
+            m.furn( p ).obj().move_str_req < get_player_character().get_str() ) {
+            if( m.furn( p ).obj().movecost == 0 ) {
+                // Obstacles are better, prefer them
+                furnitures1.push_back( p );
+            } else {
+                furnitures2.push_back( p );
+            }
+        }
+    }
+    while( ( !furnitures1.empty() || !furnitures2.empty() ) && !boardables.empty() ) {
+        const tripoint fp = random_entry_removed( furnitures1.empty() ? furnitures2 : furnitures1 );
+        const tripoint bp = random_entry_removed( boardables );
+        m.furn_set( bp, m.furn( fp ) );
+        m.furn_set( fp, f_null );
+        map_stack destination_items = m.i_at( bp );
+        for( const item &moved_item : m.i_at( fp ) ) {
+            destination_items.insert( moved_item );
+        }
+        m.i_clear( fp );
+    }
+}
+
+static bool mx_barricaded_house( map &/*m*/, const tripoint &abs_sub )
+{
+    //First, find a city
+    // TODO: fix point types
+    const city_reference c = overmap_buffer.closest_city( tripoint_abs_sm( abs_sub ) );
+    const tripoint_abs_omt city_center_omt = project_to<coords::omt>( c.abs_sm_pos );
+
+    //Then find out which types of houses (defined in regional settings) exist in this city
+    std::vector<tripoint_abs_omt> valid_omt;
+    const auto &houses = g->get_cur_om().get_settings().city_spec.get_all_houses();
+    for( const auto &elem : houses ) {
+        for( const tripoint_abs_omt &p : points_in_radius( city_center_omt, c.city->size ) ) {
+            if( overmap_buffer.check_overmap_special_type_existing( elem.obj, p ) ) {
+                valid_omt.push_back( p );
+            }
+        }
+    }
+
+    const tripoint_abs_omt &house_omt = random_entry( valid_omt, city_center_omt );
+
+    tinymap m;
+    m.load( project_to<coords::sm>( house_omt ), false );
+    m.build_outside_cache( abs_sub.z );
+
+    board_up( m, m.points_on_zlevel() );
+
+    bool found_special_place = false;
+    for( const tripoint &p : m.points_on_zlevel() ) {
+
+        switch( rng( 1, 3 ) ) {
+            // Spawn a corpse of a poor soul that recently shot himself/herself
+            case 1:
+                if( !found_special_place && m.has_flag_furn( "CAN_SIT", p ) && !m.is_outside( p ) ) {
+                    found_special_place = true;
+                    m.spawn_item( p, itype_glock_17 );
+                    m.put_items_from_loc( Item_spawn_data_everyday_corpse, p );
+                    m.spawn_item( p + point{ rng( -1, 1 ), rng( -1, 1 ) }, itype_9mm_casing );
+                    m.add_field( p, fd_blood, rng( 1, 3 ) );
+                }
+                break;
+
+            // Spawn a poor soul that shot himself/herself some time ago and turned into zombie
+            case 2:
+                if( !found_special_place && m.ter( p ) == t_floor && !m.has_furn( p ) && !m.is_outside( p ) ) {
+                    found_special_place = true;
+                    m.spawn_item( p, itype_glock_17 );
+                    m.add_spawn( mon_zombie, 1, p );
+                    m.spawn_item( p + point{ rng( -1, 1 ), rng( -1, 1 ) }, itype_9mm_casing );
+                    m.add_field( p, fd_blood, rng( 1, 3 ) );
+                }
+                break;
+
+            // Spawn either a guaranteed hostile melee/ranged NPC or a random common NPC
+            case 3:
+                if( !found_special_place && m.ter( p ) == t_floor && !m.has_furn( p ) && !m.is_outside( p ) ) {
+                    found_special_place = true;
+
+                    switch( rng( 1, 2 ) ) {
+                        case 1:
+                            m.place_npc( p.xy(), rng( 1, 2 ) ? npc_template_bandit : npc_template_thug );
+                            break;
+                        case 2:
+                            shared_ptr_fast<npc> temp = make_shared_fast<npc>();
+                            temp->normalize();
+                            temp->randomize( NC_NONE );
+                            temp->spawn_at_precise( tripoint_abs_ms( m.getabs( p ) ) );
+                            overmap_buffer.insert_npc( temp );
+                            g->load_npcs();
+                            break;
+                    }
+                }
+                break;
+        }
+    }
+    m.save();
 
     return true;
 }
@@ -2753,7 +2953,8 @@ static FunctionMap builtin_functions = {
     { map_extra_mx_corpses, mx_corpses },
     { map_extra_mx_city_trap, mx_city_trap },
     { map_extra_mx_fungal_zone, mx_fungal_zone },
-    { map_extra_mx_reed, mx_reed }
+    { map_extra_mx_reed, mx_reed },
+    { map_extra_mx_barricaded_house, mx_barricaded_house }
 };
 
 map_extra_pointer get_function( const map_extra_id &name )
