@@ -2804,8 +2804,8 @@ bool mattack::ranged_pull( monster *z )
     // So if they leave them on open air, make them fall
     here.creature_on_trap( *target );
     if( seen &&
-        target->is_avatar() ||
-        ( get_option<bool>( "LOG_MONSTER_ATTACK_MONSTER" ) && !target->is_avatar() ) ) {
+        ( target->is_avatar() ||
+          ( get_option<bool>( "LOG_MONSTER_ATTACK_MONSTER" ) && !target->is_avatar() ) ) ) {
         if( z->type->bodytype == "human" || z->type->bodytype == "angel" ) {
             add_msg( _( "The %1$s's arms fly out and pull and grab %2$s!" ), z->name(),
                      target->disp_name() );
