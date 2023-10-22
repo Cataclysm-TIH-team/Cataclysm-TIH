@@ -2676,6 +2676,11 @@ void options_manager::add_options_world_default()
          0.0, 50.0, 1.0, 0.1
        );
 
+    add( "SPAWN_ANIMAL_DENSITY", "world_default", to_translation( "Animals spawn rate scaling factor" ),
+         to_translation( "A scaling factor that determines density of wild, formerly domesticated, and mutated animal spawns.  A higher number means more animals." ),
+         0.0, 50.0, 1.0, 0.1
+    );
+
     add( "NPC_SPAWNTIME", "world_default", to_translation( "Random NPC spawn time" ),
          to_translation( "Baseline average number of days between random NPC spawns.  Average duration goes up with the number of NPCs already spawned.  A higher number means fewer NPCs.  Set to 0 days to disable random NPCs." ),
          0.0, 100.0, 4.0, 0.01
