@@ -66,6 +66,7 @@
 #include "mtype.h"
 #include "name.h"
 #include "npc.h"
+#include "options.h"
 #include "output.h"
 #include "pathfinding.h"
 #include "pimpl.h"
@@ -2701,10 +2702,12 @@ bool mattack::ranged_pull( monster *z )
             z->moves -= 200;
             const std::optional<vpart_reference> vp_seat = veh_part.avail_part_with_feature( "SEAT" );
             target->add_msg_player_or_npc( m_warning, _( "%1s tries to drag you, but is stopped by your %2s!" ),
-                                           _( "%1s tries to drag <npcname>, but is stopped by their %2s!" ),
+                                           get_option<bool>( "LOG_MONSTER_ATTACK_MONSTER" ) ?
+                                           _( "%1s tries to drag <npcname>, but is stopped by their %2s!" ) : "",
                                            z->disp_name( false, true ), vp_seatbelt->part().name( false ) );
             target->add_msg_player_or_npc( m_bad, _( "You're crushed against the %s!" ),
-                                           _( "<npcname> is crushed against the %s!" ),
+                                           get_option<bool>( "LOG_MONSTER_ATTACK_MONSTER" ) ?
+                                           _( "<npcname> is crushed against the %s!" ) : "",
                                            vp_seat->part().name( false ) );
             target->apply_damage( z, bodypart_id( "torso" ), rng( 1, 2 ) );
             // Damage the thing dragging us as well, since their arms are being strained to pull us
@@ -2718,7 +2721,8 @@ bool mattack::ranged_pull( monster *z )
         z->moves -= 200;
         game_message_type msg_type = foe && foe->is_avatar() ? m_warning : m_info;
         target->add_msg_player_or_npc( msg_type, _( "The %s's arms fly out at you, but you dodge!" ),
-                                       _( "The %s's arms fly out at <npcname>, but they dodge!" ),
+                                       get_option<bool>( "LOG_MONSTER_ATTACK_MONSTER" ) ?
+                                       _( "The %s's arms fly out at <npcname>, but they dodge!" ) : "",
                                        z->name() );
 
         target->on_dodge( z, z->type->melee_skill );
@@ -2744,7 +2748,8 @@ bool mattack::ranged_pull( monster *z )
         if( defender_check > attacker_check ) {
             game_message_type msg_type = foe && foe->is_avatar() ? m_warning : m_info;
             target->add_msg_player_or_npc( msg_type, _( "The %s's arms fly out at you…" ),
-                                           _( "The %s's arms fly out at <npcname>…" ),
+                                           get_option<bool>( "LOG_MONSTER_ATTACK_MONSTER" ) ?
+                                           _( "The %s's arms fly out at <npcname>…" ) : "",
                                            z->name() );
             target->add_msg_player_or_npc( m_info, grab_break.avatar_message.translated(),
                                            grab_break.npc_message.translated(), z->name() );
@@ -2798,7 +2803,9 @@ bool mattack::ranged_pull( monster *z )
     // The monster might drag a target that's not on it's z level
     // So if they leave them on open air, make them fall
     here.creature_on_trap( *target );
-    if( seen ) {
+    if( seen &&
+        ( target->is_avatar() ||
+          ( get_option<bool>( "LOG_MONSTER_ATTACK_MONSTER" ) && !target->is_avatar() ) ) ) {
         if( z->type->bodytype == "human" || z->type->bodytype == "angel" ) {
             add_msg( _( "The %1$s's arms fly out and pull and grab %2$s!" ), z->name(),
                      target->disp_name() );
@@ -2835,7 +2842,8 @@ bool mattack::grab( monster *z )
     const game_message_type msg_type = target->is_avatar() ? m_warning : m_info;
     if( dodge_check( z, target ) ) {
         target->add_msg_player_or_npc( msg_type, _( "The %s gropes at you, but you dodge!" ),
-                                       _( "The %s gropes at <npcname>, but they dodge!" ),
+                                       get_option<bool>( "LOG_MONSTER_ATTACK_MONSTER" ) ?
+                                       _( "The %s gropes at <npcname>, but they dodge!" ) : "",
                                        z->name() );
 
         target->on_dodge( z, z->type->melee_skill );
@@ -2879,8 +2887,10 @@ bool mattack::grab( monster *z )
     z->add_effect( effect_grabbing, 2_turns, true );
     target->add_effect( effect_grabbed, 2_turns, body_part_torso, false,
                         prev_effect + z->get_grab_strength() );
-
-    add_msg_if_player_sees( *z, m_bad, _( "The %1$s grabs %2$s!" ), z->name(), target->disp_name() );
+    if( target->is_avatar() ||
+        ( get_option<bool>( "LOG_MONSTER_ATTACK_MONSTER" ) && !target->is_avatar() ) ) {
+        add_msg_if_player_sees( *z, m_bad, _( "The %1$s grabs %2$s!" ), z->name(), target->disp_name() );
+    }
 
     return true;
 }
@@ -2899,7 +2909,9 @@ bool mattack::grab_drag( monster *z )
     if( target->has_effect( effect_under_operation ) ) {
         target->add_msg_player_or_npc( m_good,
                                        _( "The %s tries to drag you, but you're securely fastened in the Autodoc." ),
-                                       _( "The %s tries to drag <npcname>, but they're securely fastened in the Autodoc." ), z->name() );
+                                       get_option<bool>( "LOG_MONSTER_ATTACK_MONSTER" ) ?
+                                       _( "The %s tries to drag <npcname>, but they're securely fastened in the Autodoc." ) : "",
+                                       z->name() );
         return false;
     }
 
@@ -2909,10 +2921,12 @@ bool mattack::grab_drag( monster *z )
         if( vp_seatbelt ) {
             const std::optional<vpart_reference> vp_seat = veh_part.avail_part_with_feature( "SEAT" );
             target->add_msg_player_or_npc( m_warning, _( "%1s tries to drag you, but is stopped by your %2s!" ),
-                                           _( "%1s tries to drag <npcname>, but is stopped by their %2s!" ),
+                                           get_option<bool>( "LOG_MONSTER_ATTACK_MONSTER" ) ?
+                                           _( "%1s tries to drag <npcname>, but is stopped by their %2s!" ) : "",
                                            z->disp_name( false, true ), vp_seatbelt->part().name( false ) );
             target->add_msg_player_or_npc( m_bad, _( "You're crushed against the %s!" ),
-                                           _( "<npcname> is crushed against the %s!" ),
+                                           get_option<bool>( "LOG_MONSTER_ATTACK_MONSTER" ) ?
+                                           _( "<npcname> is crushed against the %s!" ) : "",
                                            vp_seat->part().name( false ) );
             target->apply_damage( z, bodypart_id( "torso" ), rng( 1, 2 ) );
             z->apply_damage( nullptr, bodypart_id( "torso" ), rng( 1, 4 ) );
@@ -2953,10 +2967,12 @@ bool mattack::grab_drag( monster *z )
             zz->setpos( zpt );
         }
         target->add_msg_player_or_npc( m_bad, _( "You are dragged behind the %s!" ),
-                                       _( "<npcname> gets dragged behind the %s!" ), z->name() );
+                                       get_option<bool>( "LOG_MONSTER_ATTACK_MONSTER" ) ?
+                                       _( "<npcname> gets dragged behind the %s!" ) : "", z->name() );
     } else {
         target->add_msg_player_or_npc( m_good, _( "You resist the %s as it tries to drag you!" ),
-                                       _( "<npcname> resist the %s as it tries to drag them!" ), z->name() );
+                                       get_option<bool>( "LOG_MONSTER_ATTACK_MONSTER" ) ?
+                                       _( "<npcname> resist the %s as it tries to drag them!" ) : "", z->name() );
     }
 
     const int prev_effect = target->get_effect_int( effect_grabbed, body_part_torso );

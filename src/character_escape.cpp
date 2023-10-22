@@ -6,6 +6,7 @@
 #include "messages.h"
 #include "monster.h"
 #include "mtype.h"
+#include "options.h"
 #include "output.h"
 
 static const efftype_id effect_beartrap( "beartrap" );
@@ -50,8 +51,9 @@ void Character::try_remove_downed()
     } else {
         add_msg_player_or_npc( m_good,
                                has_flag( json_flag_DOWNED_RECOVERY ) ? _( "You deftly roll to your feet." ) : _( "You stand up." ),
+                               get_option<bool>( "LOG_MONSTER_ATTACK_MONSTER" ) ?
                                has_flag( json_flag_DOWNED_RECOVERY ) ? _( "<npcname> deftly rolls to their feet." ) :
-                               _( "<npcname> stands up." ) );
+                               _( "<npcname> stands up." ) : "" );
         remove_effect( effect_downed );
     }
 }
@@ -80,7 +82,8 @@ void Character::try_remove_bear_trap()
         if( can_escape_trap( 100 ) ) {
             remove_effect( effect_beartrap );
             add_msg_player_or_npc( m_good, _( "You free yourself from the bear trap!" ),
-                                   _( "<npcname> frees themselves from the bear trap!" ) );
+                                   get_option<bool>( "LOG_MONSTER_ATTACK_MONSTER" ) ?
+                                   _( "<npcname> frees themselves from the bear trap!" ) : "" );
         } else {
             add_msg_if_player( m_bad,
                                _( "You try to free yourself from the bear trap, but can't get loose!" ) );
@@ -104,7 +107,8 @@ void Character::try_remove_lightsnare()
         if( can_escape_trap( 12 ) ) {
             remove_effect( effect_lightsnare );
             add_msg_player_or_npc( m_good, _( "You free yourself from the light snare!" ),
-                                   _( "<npcname> frees themselves from the light snare!" ) );
+                                   get_option<bool>( "LOG_MONSTER_ATTACK_MONSTER" ) ?
+                                   _( "<npcname> frees themselves from the light snare!" ) : "" );
             item string( "string_36", calendar::turn );
             item snare( "snare_trigger", calendar::turn );
             here.add_item_or_charges( pos(), string );
@@ -134,7 +138,8 @@ void Character::try_remove_heavysnare()
         if( can_escape_trap( 32 - dex_cur, true ) ) {
             remove_effect( effect_heavysnare );
             add_msg_player_or_npc( m_good, _( "You free yourself from the heavy snare!" ),
-                                   _( "<npcname> frees themselves from the heavy snare!" ) );
+                                   get_option<bool>( "LOG_MONSTER_ATTACK_MONSTER" ) ?
+                                   _( "<npcname> frees themselves from the heavy snare!" ) : "" );
             item rope( "rope_6", calendar::turn );
             item snare( "snare_trigger", calendar::turn );
             here.add_item_or_charges( pos(), rope );
@@ -151,7 +156,8 @@ void Character::try_remove_crushed()
     if( can_escape_trap( 100 ) ) {
         remove_effect( effect_crushed );
         add_msg_player_or_npc( m_good, _( "You free yourself from the rubble!" ),
-                               _( "<npcname> frees themselves from the rubble!" ) );
+                               get_option<bool>( "LOG_MONSTER_ATTACK_MONSTER" ) ?
+                               _( "<npcname> frees themselves from the rubble!" ) : "" );
     } else {
         add_msg_if_player( m_bad, _( "You try to free yourself from the rubble, but can't get loose!" ) );
     }
@@ -214,13 +220,15 @@ bool Character::try_remove_grab()
 
         if( zed_number == 0 ) {
             add_msg_player_or_npc( m_good, _( "You find yourself no longer grabbed." ),
-                                   _( "<npcname> finds themselves no longer grabbed." ) );
+                                   get_option<bool>( "LOG_MONSTER_ATTACK_MONSTER" ) ?
+                                   _( "<npcname> finds themselves no longer grabbed." ) : "" );
             remove_effect( effect_grabbed );
 
             /** @EFFECT_STR increases chance to escape grab */
         } else if( defender_check < attacker_check ) {
             add_msg_player_or_npc( m_bad, _( "You try to break out of the grab, but fail!" ),
-                                   _( "<npcname> tries to break out of the grab, but fails!" ) );
+                                   get_option<bool>( "LOG_MONSTER_ATTACK_MONSTER" ) ?
+                                   _( "<npcname> tries to break out of the grab, but fails!" ) : "" );
             return false;
         } else {
             std::vector<item_pocket *> pd = worn.grab_drop_pockets();
@@ -235,7 +243,8 @@ bool Character::try_remove_grab()
                     pd[index]->spill_contents( adjacent_tile() );
                     add_msg_player_or_npc( m_bad,
                                            _( "As you escape the grab something comes loose and falls to the ground!" ),
-                                           _( "<npcname> escapes the grab something comes loose and falls to the ground!" ) );
+                                           get_option<bool>( "LOG_MONSTER_ATTACK_MONSTER" ) ?
+                                           _( "<npcname> escapes the grab something comes loose and falls to the ground!" ) : "" );
                     if( is_avatar() ) {
                         popup( _( "As you escape the grab something comes loose and falls to the ground!" ) );
                     }
@@ -243,7 +252,8 @@ bool Character::try_remove_grab()
             }
 
             add_msg_player_or_npc( m_good, _( "You break out of the grab!" ),
-                                   _( "<npcname> breaks out of the grab!" ) );
+                                   get_option<bool>( "LOG_MONSTER_ATTACK_MONSTER" ) ?
+                                   _( "<npcname> breaks out of the grab!" ) : "" );
             remove_effect( effect_grabbed );
 
             for( auto&& dest : here.points_in_radius( pos(), 1, 0 ) ) { // *NOPAD*
@@ -269,7 +279,8 @@ void Character::try_remove_webs()
         }
     } else if( can_escape_trap( 6 * get_effect_int( effect_webbed ) ) ) {
         add_msg_player_or_npc( m_good, _( "You free yourself from the webs!" ),
-                               _( "<npcname> frees themselves from the webs!" ) );
+                               get_option<bool>( "LOG_MONSTER_ATTACK_MONSTER" ) ?
+                               _( "<npcname> frees themselves from the webs!" ) : "" );
         remove_effect( effect_webbed );
     } else {
         add_msg_if_player( _( "You try to free yourself from the webs, but can't get loose!" ) );
@@ -291,7 +302,8 @@ void Character::try_remove_impeding_effect()
             /** @EFFECT_STR increases chance to escape webs */
         } else if( can_escape_trap( 6 * get_effect_int( eff_id ) ) ) {
             add_msg_player_or_npc( m_good, _( "You free yourself!" ),
-                                   _( "<npcname> frees themselves!" ) );
+                                   get_option<bool>( "LOG_MONSTER_ATTACK_MONSTER" ) ?
+                                   _( "<npcname> frees themselves!" ) : "" );
             remove_effect( eff_id );
         } else {
             add_msg_if_player( _( "You try to free yourself, but can't!" ) );
@@ -342,7 +354,8 @@ bool Character::move_effects( bool attacking )
             return false;
         } else {
             add_msg_player_or_npc( m_good, _( "You escape the pit!" ),
-                                   _( "<npcname> escapes the pit!" ) );
+                                   get_option<bool>( "LOG_MONSTER_ATTACK_MONSTER" ) ?
+                                   _( "<npcname> escapes the pit!" ) : "" );
             remove_effect( effect_in_pit );
         }
     }
