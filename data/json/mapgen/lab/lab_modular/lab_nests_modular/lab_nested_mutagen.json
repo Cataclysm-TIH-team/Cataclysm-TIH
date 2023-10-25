@@ -1426,8 +1426,8 @@
     "object": {
       "mapgensize": [ 9, 9 ],
       "rows": [
-        "JJ 6e|   ",
-        " Ac  X   ",
+        "JJ 5 |   ",
+        "  cA X   ",
         "a cA X   ",
         "q    |   ",
         "qQQQ -   ",
@@ -1445,6 +1445,11 @@
         "q": [ { "item": "lab_mutagen_ingredients", "chance": 40 } ]
       },
       "computers": {
+        "5": {
+          "name": "Mutations Terminal",
+          "options": [ { "name": "List mutation categories", "action": "list_mutations" } ],
+          "failures": [ { "action": "alarm" } ]
+        },
         "6": {
           "name": "Centrifuge",
           "options": [ { "name": "Analyze blood", "action": "blood_anal" } ],
@@ -1461,8 +1466,8 @@
     "object": {
       "mapgensize": [ 9, 9 ],
       "rows": [
-        "   |JJ 6e",
-        "   X Ac  ",
+        "   |JJ 5 ",
+        "   X AcA ",
         "   X  cAa",
         "   |    q",
         "   - QQQq",
@@ -1480,6 +1485,11 @@
         "q": [ { "item": "lab_mutagen_ingredients", "chance": 40 } ]
       },
       "computers": {
+        "5": {
+          "name": "Mutations Terminal",
+          "options": [ { "name": "List mutation categories", "action": "list_mutations" } ],
+          "failures": [ { "action": "alarm" } ]
+        },
         "6": {
           "name": "Centrifuge",
           "options": [ { "name": "Analyze blood", "action": "blood_anal" } ],
